@@ -20,6 +20,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import controllers.ICommand;
 import controllers.PageAccueilController;
+import controllers.creation;
+import controllers.listMusiciens;
+import controllers.modification;
+import controllers.suppression;
 
 /**
  *
@@ -42,6 +46,10 @@ public class Servlet extends HttpServlet {
 
   public void init() {
     commands.put(null, new PageAccueilController());
+    commands.put("list-de-musiciens", new listMusiciens());
+    commands.put("cree", new creation());
+    commands.put("modifier", new modification());
+    commands.put("suppression", new suppression());
     }
 
   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -50,13 +58,13 @@ public class Servlet extends HttpServlet {
     String urlSuite = null;
     try (PrintWriter out = response.getWriter()) {
       String cmd = request.getParameter("cmd");
-      ICommand com=(ICommand)commands.get(cmd);
+      ICommand com =(ICommand)commands.get(cmd);
       urlSuite = com.execute(request, response);
       request.getRequestDispatcher(urlSuite).forward(request, response);
     } catch (Exception e) {
-      urlSuite = "erreur.jsp";
+      urlSuite = "/WEB-INF/JSP/erreur.jsp";
+      request.getRequestDispatcher(urlSuite).forward(request, response);
     }
-    request.getRequestDispatcher(urlSuite).forward(request, response);
     }
 
   // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
