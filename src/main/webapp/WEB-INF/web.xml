@@ -5,7 +5,9 @@ http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 id="WebApp_ID" version="3.0">
 <welcome-file-list>
   <welcome-file>groupe-musique</welcome-file>
-</welcome-file-list>  
+</welcome-file-list> 
+
+
 <error-page>
   <error-code>500</error-code>   
   <location>/WEB-INF/JSP/erreur.jsp</location>

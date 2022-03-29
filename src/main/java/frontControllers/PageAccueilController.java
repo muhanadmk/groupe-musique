@@ -1,10 +1,14 @@
-package controllers;
+package frontControllers;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class modification  implements ICommand {
+public class PageAccueilController implements ICommand {
   public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-    return "/WEB-INF/JSP/modification.jsp";
+    return "index.jsp";
   }
+
+  
+
 }

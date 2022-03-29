@@ -1,10 +1,10 @@
-package controllers;
+package frontControllers;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class creation  implements ICommand {
+public class PagelistMusiciensController  implements ICommand {
   public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-    return "/WEB-INF/JSP/creation.jsp";
+    return "liste.jsp";
   }
 }

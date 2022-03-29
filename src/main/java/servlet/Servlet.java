@@ -18,16 +18,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import controllers.ICommand;
-import controllers.PageAccueilController;
-import controllers.creation;
-import controllers.listMusiciens;
-import controllers.modification;
-import controllers.suppression;
+import frontControllers.ICommand;
+import frontControllers.PageAccueilController;
+import frontControllers.PageCreationController;
+import frontControllers.PageModificationController;
+import frontControllers.PageSuppressionController;
+import frontControllers.PagelistMusiciensController;
 
 /**
  *
- * @author Muhanad
+ * @author Muhanad ALMOKDAD
  */
 @WebServlet(urlPatterns = { "/groupe-musique" })
 public class Servlet extends HttpServlet {
@@ -46,10 +46,10 @@ public class Servlet extends HttpServlet {
 
   public void init() {
     commands.put(null, new PageAccueilController());
-    commands.put("list-de-musiciens", new listMusiciens());
-    commands.put("cree", new creation());
-    commands.put("modifier", new modification());
-    commands.put("suppression", new suppression());
+    commands.put("list-de-musiciens", new PagelistMusiciensController());
+    commands.put("cree", new PageCreationController());
+    commands.put("modifier", new PageModificationController());
+    commands.put("suppression", new PageSuppressionController());
     }
 
   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -60,10 +60,11 @@ public class Servlet extends HttpServlet {
       String cmd = request.getParameter("cmd");
       ICommand com =(ICommand)commands.get(cmd);
       urlSuite = com.execute(request, response);
-      request.getRequestDispatcher(urlSuite).forward(request, response);
+      // request.setAttribute("name", "muhanad");
+      request.getRequestDispatcher("/WEB-INF/JSP/"+ urlSuite).forward(request, response);
     } catch (Exception e) {
-      urlSuite = "/WEB-INF/JSP/erreur.jsp";
-      request.getRequestDispatcher(urlSuite).forward(request, response);
+      urlSuite = "erreur.jsp";
+      request.getRequestDispatcher("/WEB-INF/JSP/"+ urlSuite).forward(request, response);
     }
     }
 

@@ -1,4 +1,4 @@
-package controllers;
+package frontControllers;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
