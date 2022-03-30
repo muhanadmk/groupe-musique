@@ -1,5 +1,4 @@
-<%@ page pageEncoding="UTF-8" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ include file="taglibs.jsp" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -8,11 +7,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/node_modules/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css" />
-  <title>Err</title>
+  <title>page Err 404</title>
 </head>
 <body>
   <%@ include file="header.jsp" %>
-  <h1 class="d-flex justify-content-center">Desole, On ne peut pas traiter votre demande</h1>
+  <h1 class="d-flex justify-content-center">Désole, On ne peut pas traiter votre demande</h1>
   <div class="d-flex justify-content-center">
     <img src="${pageContext.request.contextPath}/images/page-erreur-404.jpg" alt="img">
   </div>

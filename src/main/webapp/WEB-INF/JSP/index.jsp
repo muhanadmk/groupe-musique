@@ -1,21 +1,26 @@
-<%@ page pageEncoding="UTF-8" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<!DOCTYPE html>
+<%@ include file="taglibs.jsp" %>
 <html lang="fr">
-  
   <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/node_modules/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="${pageContext.request.contextPath}/node_modules/bootstrap/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="${pageContext.request.contextPath}/css/style.css"
+    />
     <title>groupe-musique</title>
   </head>
 
   <body>
     <%@ include file="header.jsp" %>
-      <h1>Accuéil </h1>
-      <%@ include file="footer.jsp" %>
+    <h1>page accuile</h1>
+  
+      
+    
+    <%@ include file="footer.jsp" %>
   </body>
-
-  </html>
+</html>
