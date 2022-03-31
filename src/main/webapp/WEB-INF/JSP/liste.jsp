@@ -20,7 +20,7 @@
     <%@ include file="header.jsp" %>
     <div class="container">
       <h1 class="mt-4">Hello list De Musiciens !!!!!!!</h1>
-      <h2>la numéro des adhérents : ${msgOrNumberDePersonne}</h2>
+      <h2>la numéro des adhérents : <c:out value="${msgOrNumberDePersonne}"/> </h2>
       <table class="table table-striped mt-4">
         <c:if test="${personnes == null}">
           <h2>on a pas de personnes</h2>
@@ -44,13 +44,13 @@
             <tbody>
               <tr>
                 <c:if test="${personne.identifiant != null}">
-                  <th scope="row">${personne.identifiant}</th>
+                  <th scope="row"><c:out value="${personne.identifiant}"/> </th>
                 </c:if>
                 <c:if test="${personne.nom != null}">
-                  <td>${personne.nom}</td>
+                  <td><c:out value="${personne.nom}"/></td>
                 </c:if>
                 <c:if test="${personne.prenom != null}">
-                  <td>${personne.prenom}</td>
+                  <td><c:out value="${personne.prenom}"/></td>
                 </c:if>
               </tr>
             </tbody>
