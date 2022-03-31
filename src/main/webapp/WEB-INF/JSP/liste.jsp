@@ -20,12 +20,14 @@
     <%@ include file="header.jsp" %>
     <div class="container">
       <h1 class="mt-4">Hello list De Musiciens !!!!!!!</h1>
-      <h2>la numéro des adhérents : <c:out value="${msgOrNumberDePersonne}"/> </h2>
+      <c:if test="${empty personnes}">  
+        <h2>la numéro des adhérents :  <c:out value="la liste des adhérents  est vide"/> </h2> 
+      </c:if>
+      <c:if test="${!empty personnes}">  
+        <h2>la numéro des adhérents :  <c:out value="${personnesSize}"/> </h2> 
+      </c:if>
       <table class="table table-striped mt-4">
-        <c:if test="${personnes == null}">
-          <h2>on a pas de personnes</h2>
-        </c:if>
-        <c:if test="${personnes != null}">
+        <c:if test="${!empty personnes}">
           <thead>
             <tr>
               <th scope="col">ID</th>
@@ -40,17 +42,17 @@
           items="${personnes}"
           varStatus="status"
         >
-          <c:if test="${personnes != null}">
+          <c:if test="${!empty personnes}">
             <tbody>
               <tr>
-                <c:if test="${personne.identifiant != null}">
+                <c:if test="${!empty personne.identifiant}">
                   <th scope="row"><c:out value="${personne.identifiant}"/> </th>
                 </c:if>
-                <c:if test="${personne.nom != null}">
+                <c:if test="${!empty personne.nom}">
                   <td><c:out value="${personne.nom}"/></td>
                 </c:if>
                 <c:if test="${personne.prenom != null}">
-                  <td><c:out value="${personne.prenom}"/></td>
+                  <td><c:out value="${!empty personne.prenom}"/></td>
                 </c:if>
               </tr>
             </tbody>
