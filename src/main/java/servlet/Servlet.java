@@ -60,7 +60,6 @@ public class Servlet extends HttpServlet {
       String cmd = request.getParameter("cmd");
       ICommand com =(ICommand)commands.get(cmd);
       urlSuite = com.execute(request, response);
-      // request.setAttribute("name", "muhanad");
       request.getRequestDispatcher("/WEB-INF/JSP/"+ urlSuite).forward(request, response);
     } catch (Exception e) {
       urlSuite = "erreur.jsp";

@@ -51,8 +51,8 @@
                 <c:if test="${!empty personne.nom}">
                   <td><c:out value="${personne.nom}"/></td>
                 </c:if>
-                <c:if test="${personne.prenom != null}">
-                  <td><c:out value="${!empty personne.prenom}"/></td>
+                <c:if test="${!empty personne.prenom}">
+                  <td><c:out value="${personne.prenom}"/></td>
                 </c:if>
               </tr>
             </tbody>

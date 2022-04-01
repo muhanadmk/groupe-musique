@@ -8,6 +8,7 @@ public class Personne {
   @NotNull(message = "Name may not be null")
   @NotEmpty(message = "Name may not be empty")
   private Integer identifiant;
+  private static Integer id =1;
   @NotNull(message = "first name may not be null")
   @NotEmpty(message = "first name may not be empty")
   @Size(max = 30, message = "prenom dois moin que 300")
@@ -21,8 +22,8 @@ public class Personne {
 
   public Personne(){}
 
-  public Personne(int identifiant, String nom, String prenom){
-    setIdentifiant(identifiant);
+  public Personne(String nom, String prenom){
+    this.identifiant = id++;
     setNom(nom);
     setPrenom(prenom);
   }
