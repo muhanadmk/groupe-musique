@@ -11,7 +11,7 @@
 </head>
 <body>
   <%@ include file="header.jsp" %>
-  <h1 class="d-flex justify-content-center">Désole, On ne peut pas traiter votre demande</h1>
+  <h1 class="d-flex justify-content-center">${msgErr}</h1>
   <div class="d-flex justify-content-center">
     <img src="${pageContext.request.contextPath}/images/page-erreur-404.jpg" alt="img">
   </div>

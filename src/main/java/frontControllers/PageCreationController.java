@@ -8,11 +8,17 @@ import utile.utilitaire;
 
 public class PageCreationController implements ICommand {
   public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-    if(request.getParameter("nom") != null && request.getParameter("prenom") != null ){
-      Personne personne = new Personne(request.getParameter("nom"), request.getParameter("prenom"));
-      utilitaire.getPersonnes().add(personne);
-      request.setAttribute("personne", personne);
+    try {
+      if(request.getParameterMap().containsKey("nom") && 
+      request.getParameterMap().containsKey("prenom") ){
+        Personne personne = new Personne(request.getParameter("nom"), request.getParameter("prenom"));
+        utilitaire.getPersonnes().add(personne);
+      }
+      return "creeEtModification.jsp";      
+    } catch (Exception e) {
+      request.setAttribute("msgErr", e.getCause() + " calas is "+ e.getClass()
+      + e.getStackTrace());
+      return "erreur.jsp";
     }
-    return "creation.jsp";
   }
 }
