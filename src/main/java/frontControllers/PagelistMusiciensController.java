@@ -8,7 +8,7 @@ import utile.utilitaire;
 
 public class PagelistMusiciensController implements ICommand {
   public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-    if ( utilitaire.getPersonnes().size() == 0 ) {
+    if (utilitaire.getPersonnes().isEmpty()) {
       Personne personne = new Personne( "mazen", "a");
       Personne personne2 = new Personne("ahmed", "b");
       Personne personne3 = new Personne("sham", "c");
