@@ -14,9 +14,9 @@
 
   <body>
     <%@ include file="header.jsp" %>
-
+      <h1>${!empty msgErrBens ? msgErrBens : ''}</h1>
       <main class="text-black container mt-lg-5 mt-sm-4">
-        <c:if test="${!empty personnes}">
+        <c:if test="${!empty personnes and empty errSaisiePersonForm}">
           <h1 class="d-flex justify-content-center mb-4">modification</h1>
           <div class="container">
             <div class="row d-flex justify-content-center">
@@ -41,28 +41,30 @@
           </div>
         </c:if>
 
-        <c:if test="${empty personnes}">
+        <c:if test="${empty personnes or !empty errSaisiePersonForm}">
           <div class="container">
-            <h1 class="d-flex justify-content-center mb-4">${empty personneselectionne ? "creation" : "modification"}</h1>
+            <h1 class="d-flex justify-content-center mb-4">${!empty creation ? "creation" : "modification"}</h1>
+            <p class="d-flex justify-content-center mb-4 text-danger">${!empty errSaisiePersonForm ? errSaisiePersonForm : ''}</p>
             <div class="row d-flex justify-content-center">
               <form class="col-lg-6 col-sm-12" method="post">
                 <div id="nomErr" class="form-input">
                   <label id="labNom" for="nom">nom :</label>
                   <input type="text" class="form-control nom" id="nom" name="nom"
-                    value="${empty personneselectionne ? "" : personneselectionne.nom}" placeholder="almokdad"
+                    value="${empty personneselectionne.nom ? "" : personneselectionne.nom}" placeholder="almokdad"
                     required />
                 </div>
                 <div id="prenomErr" class="form-input">
                   <label for="prenom">prenom :</label>
                   <input type="text" class="form-control" id="prenom" name="prenom"
-                    value="${empty personneselectionne ? "" : personneselectionne.prenom}" placeholder="muhanad"
+                    value="${empty personneselectionne.prenom ? "" : personneselectionne.prenom}" placeholder="muhanad"
                     required />
                 </div>
+
                 <input type="hidden" name="idModifier"
-                  value="${empty personneselectionne ? "" : personneselectionne.identifiant}">
+                  value="${empty personneselectionne.identifiant ? "" : personneselectionne.identifiant}">
                 <div class="d-flex justify-content-center mt-5 mb-5">
                   <button type="submit" id="btnSubmit" class="btn btn-primary p-md-4 p-sm-3">
-                    ${empty personneselectionne ? "Cree" : "Modifier"}
+                    ${!empty creation ? "Cree" : "Modifier"}
                   </button>
                 </div>
               </form>

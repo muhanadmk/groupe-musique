@@ -18,7 +18,6 @@
   <body>
     <%@ include file="header.jsp" %>
     <h1>page accuile</h1>
-  
       
     
     <%@ include file="footer.jsp" %>
