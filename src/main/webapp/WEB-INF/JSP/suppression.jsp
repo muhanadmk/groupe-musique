@@ -13,31 +13,33 @@
 <%@ include file="header.jsp" %>
 
  <main class="text-black container mt-lg-5 mt-sm-4">
-   <h1 class="d-flex justify-content-center mb-4">${msgListIsvide}</h1>
-  <c:if test="${!empty personnes}">
-    <h1 class="d-flex justify-content-center mb-4">suppression</h1>
-    <div class="container">
-      <div class="row d-flex justify-content-center">
-        <form class="col-lg-6 col-sm-12" method="post">
-          <div class="form-input mt-4">
-            <label for="form-select">choisir personne :</label>
-            <select class="form-select" name="idSelectPersonne" required>
-              <c:forEach var="personne" begin="0" items="${personnes}">
-                <option value="<c:out value="${personne.identifiant}"/>">
-                <c:out value="${personne.nom}" />
-                </option>
-              </c:forEach>
-            </select>
-          </div>
-          <div class="d-flex justify-content-center mt-5 mb-5">
-            <button type="submit" id="btnSubmit" class="btn btn-primary p-md-4 p-sm-3">
-              supprimer
-            </button>
-          </div>
-        </form>
+   <div class="container">
+     <div class="row d-flex justify-content-center">
+      <p class="col-lg-6 col-sm-12 alert alert-primary" role="alert">
+        Le numéro de page lu est : <c:out value="${!empty sessionScope.compteurPage ? sessionScope.compteurPage :'Err in compteurPage'}"/>   
+        </p>
+        <c:if test="${!empty personnes}">
+          <h1 class="d-flex justify-content-center mb-4">suppression</h1>
+          <form class="col-lg-6 col-sm-12" method="post">
+            <div class="form-input mt-4">
+              <label for="form-select">choisir personne :</label>
+              <select class="form-select" name="idSelectPersonne" required>
+                <c:forEach var="personne" begin="0" items="${personnes}">
+                  <option value="<c:out value="${personne.identifiant}"/>">
+                  <c:out value="${personne.nom}" />
+                  </option>
+                </c:forEach>
+              </select>
+            </div>
+            <div class="d-flex justify-content-center mt-5 mb-5">
+              <button type="submit" id="btnSubmit" class="btn btn-primary p-md-4 p-sm-3">
+                supprimer
+              </button>
+            </div>
+          </form>
+      </c:if>
       </div>
     </div>
-  </c:if>
  
  </main>
  <%@ include file="footer.jsp" %>

@@ -15,11 +15,15 @@
   <body>
     <%@ include file="header.jsp" %>
       <h1>${!empty msgErrBens ? msgErrBens : ''}</h1>
+  
       <main class="text-black container mt-lg-5 mt-sm-4">
-        <c:if test="${!empty personnes and empty errSaisiePersonForm}">
-          <h1 class="d-flex justify-content-center mb-4">modification</h1>
-          <div class="container">
-            <div class="row d-flex justify-content-center">
+        <div class="container">
+          <div class="row d-flex justify-content-center">
+            <p class="col-lg-6 col-sm-12 alert alert-primary" role="alert">
+            Le numéro de page lu est :  <c:out value="${!empty sessionScope.compteurPage ? sessionScope.compteurPage :'Err in compteurPage'}"/>   
+            </p>
+            <c:if test="${!empty personnes and empty errSaisiePersonForm}">
+              <h1 class="d-flex justify-content-center mb-4">modification</h1>
               <form class="col-lg-6 col-sm-12" method="post">
                 <div class="form-input mt-4">
                   <label for="form-select">choisir personne :</label>
@@ -37,14 +41,14 @@
                   </button>
                 </div>
               </form>
+            </c:if>
             </div>
           </div>
-        </c:if>
 
         <c:if test="${empty personnes or !empty errSaisiePersonForm}">
           <div class="container">
             <h1 class="d-flex justify-content-center mb-4">${!empty creation ? "creation" : "modification"}</h1>
-            <p class="d-flex justify-content-center mb-4 text-danger">${!empty errSaisiePersonForm ? errSaisiePersonForm : ''}</p>
+            <p class="d-flex justify-content-center col-lg-6 col-sm-12 alert alert-danger" role="alert"">${!empty errSaisiePersonForm ? errSaisiePersonForm : ''}</p>
             <div class="row d-flex justify-content-center">
               <form class="col-lg-6 col-sm-12" method="post">
                 <div id="nomErr" class="form-input">
@@ -64,7 +68,7 @@
                   value="${empty personneselectionne.identifiant ? "" : personneselectionne.identifiant}">
                 <div class="d-flex justify-content-center mt-5 mb-5">
                   <button type="submit" id="btnSubmit" class="btn btn-primary p-md-4 p-sm-3">
-                    ${!empty creation ? "Cree" : "Modifier"}
+                    <c:out value="${!empty creation ? 'Cree' : 'Modifier'}" /> 
                   </button>
                 </div>
               </form>

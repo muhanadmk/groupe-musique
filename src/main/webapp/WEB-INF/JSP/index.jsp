@@ -18,8 +18,9 @@
   <body>
     <%@ include file="header.jsp" %>
     <h1>page accuile</h1>
-      
-    
+    <p class="col-lg-6 col-sm-12 alert alert-primary" role="alert">
+      Le numéro de page lu est :  <c:out value="${!empty sessionScope.compteurPage ? sessionScope.compteurPage :'Err in compteurPage'}"/>   
+      </p>   
     <%@ include file="footer.jsp" %>
   </body>
 </html>

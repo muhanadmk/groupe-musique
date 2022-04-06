@@ -23,7 +23,7 @@ import frontControllers.PageAccueilController;
 import frontControllers.PageCreationController;
 import frontControllers.PageModificationController;
 import frontControllers.PageSuppressionController;
-import frontControllers.PagelistMusiciensController;
+import frontControllers.PagelistpersonnesController;
 
 /**
  *
@@ -46,7 +46,7 @@ public class Servlet extends HttpServlet {
 
   public void init() {
     commands.put(null, new PageAccueilController());
-    commands.put("list-de-musiciens", new PagelistMusiciensController());
+    commands.put("list-de-musiciens", new PagelistpersonnesController());
     commands.put("cree", new PageCreationController());
     commands.put("modifier", new PageModificationController());
     commands.put("suppression", new PageSuppressionController());
