@@ -32,15 +32,16 @@ public class PageModificationController implements ICommand {
       if (request.getParameterMap().containsKey("idModifier")) {
         Personne personne = utilitaire.getPersonnes()
             .get(Integer.parseInt(request.getParameter("idModifier")) - 1);
-        personne.setNom(request.getParameter("nom"));
-        personne.setPrenom(request.getParameter("prenom"));
+        Personne personneAvantModif = personne;
         SaisiePersonForm saisiePersonForm = new SaisiePersonForm();
         saisiePersonForm.verifForm(request);
         String resultat = saisiePersonForm.getResultat();
         if (!resultat.trim().isEmpty()) {
-          request.setAttribute("personneselectionne", personne);
+          request.setAttribute("personneselectionne", personneAvantModif);
           request.setAttribute("errSaisiePersonForm", resultat);
         } else {
+          personne.setNom(request.getParameter("nom"));
+          personne.setPrenom(request.getParameter("prenom"));
           utilitaire.getPersonnes().add(personne);
         }
       }

@@ -14,7 +14,8 @@ public class SaisiePersonForm {
     if (nom.toUpperCase().equals(prenom.toUpperCase())
       || nom.toLowerCase().equals(prenom.toLowerCase())
     ) {
-      setResultat("le nom et le prénom ne doit pas etre identiques");
+      setResultat("le nom : ( " + nom + " ) et le prénom : ( "+ prenom + " )"+
+      "ne doit pas etre identiques");
     }
   }
 

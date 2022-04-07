@@ -9,7 +9,7 @@
     <link rel="stylesheet"
       href="${pageContext.request.contextPath}/node_modules/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css" />
-    <title>modification</title>
+    <title><c:out value="${!empty creation ? 'creation' : 'modification'}" /></title>
   </head>
 
   <body>
@@ -44,11 +44,14 @@
             </c:if>
             </div>
           </div>
-
         <c:if test="${empty personnes or !empty errSaisiePersonForm}">
           <div class="container">
-            <h1 class="d-flex justify-content-center mb-4">${!empty creation ? "creation" : "modification"}</h1>
-            <p class="d-flex justify-content-center col-lg-6 col-sm-12 alert alert-danger" role="alert"">${!empty errSaisiePersonForm ? errSaisiePersonForm : ''}</p>
+            <h1 class="d-flex justify-content-center mb-4">
+              <c:out value="${!empty creation ? 'creation' : 'modification'}" />  
+            </h1> 
+            <p class="d-flex justify-content-center text-danger">
+              ${errSaisiePersonForm}
+              </p>
             <div class="row d-flex justify-content-center">
               <form class="col-lg-6 col-sm-12" method="post">
                 <div id="nomErr" class="form-input">
@@ -63,7 +66,6 @@
                     value="${empty personneselectionne.prenom ? "" : personneselectionne.prenom}" placeholder="muhanad"
                     required />
                 </div>
-
                 <input type="hidden" name="idModifier"
                   value="${empty personneselectionne.identifiant ? "" : personneselectionne.identifiant}">
                 <div class="d-flex justify-content-center mt-5 mb-5">
