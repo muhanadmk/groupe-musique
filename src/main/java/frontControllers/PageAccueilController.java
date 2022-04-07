@@ -1,5 +1,6 @@
 package frontControllers;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -14,6 +15,10 @@ public class PageAccueilController implements ICommand {
       compteurPage++;
       session.setAttribute("compteurPage", compteurPage);
     }
+    Cookie cookie = new Cookie("prenom", "muhanad");
+    cookie.setMaxAge(60*60*24);
+    response.addCookie(cookie);
+    
     return "index.jsp";
   }
 }

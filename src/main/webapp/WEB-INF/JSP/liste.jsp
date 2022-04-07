@@ -20,6 +20,7 @@
     <%@ include file="header.jsp" %>
     <div class="container">
       <h1 class="mt-4">Hello list De Musiciens !!!!!!!</h1>
+      <p>Hello <c:out value="${Monprenom}"/> from cookie</p>
       <p class="col-lg-6 col-sm-12 alert alert-primary" role="alert">
         Le numéro de page lu est :  <c:out value="${!empty sessionScope.compteurPage ? sessionScope.compteurPage :'Err in compteurPage'}"/>   
         </p>

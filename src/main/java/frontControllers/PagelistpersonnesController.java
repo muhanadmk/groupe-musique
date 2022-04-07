@@ -1,5 +1,6 @@
 package frontControllers;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -17,6 +18,15 @@ public class PagelistpersonnesController implements ICommand {
       compteurPage++;
       session.setAttribute("compteurPage", compteurPage);
     }
+    Cookie[] cookies = request.getCookies();
+    if (cookies != null) {
+      for (Cookie cookie : cookies) {
+        if (cookie.getName().equals("prenom")) {
+          request.setAttribute("Monprenom", cookie.getValue());
+        }
+      }
+    }
+    
     if (utilitaire.getPersonnes().isEmpty()) {
       Personne personne = new Personne("mazen", "a");
       Personne personne2 = new Personne("ahmed", "b");
