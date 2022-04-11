@@ -35,7 +35,7 @@ public class PageCreationController implements ICommand {
         SaisiePersonForm saisiePersonForm = new SaisiePersonForm();
         saisiePersonForm.verifForm(request);
         String resultat = saisiePersonForm.getResultat();
-        if (resultat != null) {
+        if (!resultat.trim().isEmpty()) {
           request.setAttribute("personneselectionne", personne);
           request.setAttribute("errSaisiePersonForm", resultat);
         } else {

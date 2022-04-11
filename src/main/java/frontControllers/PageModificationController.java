@@ -51,7 +51,6 @@ public class PageModificationController implements ICommand {
         } else {
           personne.setNom(request.getParameter("nom"));
           personne.setPrenom(request.getParameter("prenom"));
-          utilitaire.getPersonnes().add(personne);
         }
       }
       return "creeEtModification.jsp";
