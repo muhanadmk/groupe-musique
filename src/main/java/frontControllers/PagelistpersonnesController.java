@@ -9,11 +9,21 @@ import models.Personne;
 import utile.utilitaire;
 
 public class PagelistpersonnesController implements ICommand {
-  public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+  /**
+   * Méthode pour télécharger les personnes et
+   * les stocker dans arrylist pour les afficher.
+   * @param request  request objet de classe HttpServletRequest
+   * @param response response objet de classe HttpServletResponse
+   * @return le parm vers la page jsp de liste de persoones
+   * @throws Exception objet de classe Exception
+   *
+   */
+  public String execute(final HttpServletRequest request,
+      final HttpServletResponse response) throws Exception {
     HttpSession session = request.getSession();
     if (session.getAttribute("compteurPage") == null) {
       session.setAttribute("compteurPage", 0);
-    }else{
+    } else {
       Integer compteurPage = (Integer) session.getAttribute("compteurPage");
       compteurPage++;
       session.setAttribute("compteurPage", compteurPage);
@@ -26,7 +36,6 @@ public class PagelistpersonnesController implements ICommand {
         }
       }
     }
-    
     if (utilitaire.getPersonnes().isEmpty()) {
       Personne personne = new Personne("mazen", "a");
       Personne personne2 = new Personne("ahmed", "b");
@@ -40,6 +49,6 @@ public class PagelistpersonnesController implements ICommand {
       request.setAttribute("personnes", utilitaire.getPersonnes());
       request.setAttribute("personnesSize", utilitaire.getPersonnes().size());
     }
-    return "liste.jsp";
+    return "list.jsp";
   }
 }

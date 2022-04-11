@@ -12,7 +12,7 @@
             <a class="nav-link active rounded-1 third-bgcolor text-light" aria-current="page" href="${pageContext.request.contextPath}">Accueil</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active text-light" href="?cmd=list-de-musiciens">liste</a>
+            <a class="nav-link active text-light" href="?cmd=list">liste</a>
           </li>
           <li class="nav-item">
             <a class="nav-link active text-light" href="?cmd=cree">creation</a>

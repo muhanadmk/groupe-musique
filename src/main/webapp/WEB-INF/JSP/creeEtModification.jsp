@@ -69,7 +69,7 @@
                 <input type="hidden" name="idModifier"
                   value="${empty personneselectionne.identifiant ? "" : personneselectionne.identifiant}">
                 <div class="d-flex justify-content-center mt-5 mb-5">
-                  <button type="submit" id="btnSubmit" class="btn btn-primary p-md-4 p-sm-3">
+                  <button type="submit" id="btnSubmit" name="btnSubmit" class="btn btn-primary p-md-4 p-sm-3">
                     <c:out value="${!empty creation ? 'Cree' : 'Modifier'}" /> 
                   </button>
                 </div>

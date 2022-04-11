@@ -4,56 +4,110 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+
 public class Personne {
-  @NotNull(message = "Name may not be null")
-  @NotEmpty(message = "Name may not be empty")
+
+  /**
+   * identifiant may not be null.
+   * identifiant may not be empty.
+   */
+  @NotNull(message = "identifiant may not be null")
+  @NotEmpty(message = "identifiant may not be empty")
   private Integer identifiant;
-  private static Integer id =1;
+  /**
+   * pour avoir fair id dynamique.
+   */
+  private static Integer id = 1;
+ /**
+   * first name may not be null.
+   * first name may not be empty.
+   * size doit etre moins de 30 et puls 2.
+   */
   @NotNull(message = "first name may not be null")
   @NotEmpty(message = "first name may not be empty")
-  @Size(max = 30, message = "prenom dois moin que 300")
-  @Size(min =2, message = "pernom doit etre plus que 2 lettre")
+  @Size(max = 30, message = "prenom dois moin que 30")
+  @Size(min = 2, message = "pernom doit etre plus que 2 lettre")
   private String prenom;
+
+  /**
+   *  name may not be null.
+   *  name may not be empty.
+   * size doit etre moins de 30 et puls 2.
+   */
   @NotNull(message = "Name may not be null")
   @NotEmpty(message = "Name may not be empty")
-  @Size(max = 30, message = "nom dois moin que 300")
+  @Size(max = 30, message = "nom dois moin que 30")
   private String nom;
 
+/**
+ * constructeur implicit.
+ */
+  public Personne() { }
 
-  public Personne(){}
-
-  public Personne(String nom, String prenom){
+  /**
+   * constructeur de la classe personne.
+   * @param nomPersonne String nom de Personne
+   * @param prenomPersonne String prenom de Personne
+   */
+  public Personne(final String nomPersonne,
+   final String prenomPersonne) {
     this.identifiant = id++;
-    setNom(nom);
-    setPrenom(prenom);
+    setNom(nomPersonne);
+    setPrenom(prenomPersonne);
   }
 
-  public void setNom(String nom) {
-    this.nom = nom;
+  /**
+   * pour set le nom.
+   * @param nomPersonne String nom de Personne.
+   */
+  public void setNom(final String nomPersonne) {
+    this.nom = nomPersonne;
   }
+  /**
+   * pour get le nom.
+   * @return String nom de Personne.
+   */
   public String getNom() {
     return nom;
   }
-  public void setIdentifiant(int identifiant) {
-    this.identifiant = identifiant;
+
+  /**
+   * set id de Personne.
+   * @param identifiantPersonne id de pour set le identifiant Personne.
+   */
+  public void setIdentifiant(final int identifiantPersonne) {
+    this.identifiant = identifiantPersonne;
   }
-  public String getPrenom() {
-    return prenom;
-  }
+  /**
+   * get id de Personne.
+   * @return id de Personne
+   */
+
   public int getIdentifiant() {
     return identifiant;
   }
-  public void setPrenom(String prenom) {
-    this.prenom = prenom;
-  }
+  /**
+   * pour get le prenom.
+   * @return String prenom de Personne.
+   */
 
+  public String getPrenom() {
+    return prenom;
+  }
+  /**
+   * pour set le prenom de Personne.
+   * @param prenomPersonne de Personne
+   */
+  public void setPrenom(final String prenomPersonne) {
+    this.prenom = prenomPersonne;
+  }
   @Override
-  public String toString() {
-    return "{" +
-      " identifiant='" + getIdentifiant() + "'" +
-      ", prenom='" + getPrenom() + "'" +
-      ", nom='" + getNom() + "'" +
-      "}";
+  public final String toString() {
+    return "{"
+    +  " identifiant='" + getIdentifiant()
+    + ", prenom='" + getPrenom()
+    + ", nom='" + getNom()
+    +  "}";
   }
 }
 

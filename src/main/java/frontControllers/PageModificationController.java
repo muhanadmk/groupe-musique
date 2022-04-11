@@ -9,11 +9,20 @@ import models.forms.SaisiePersonForm;
 import utile.utilitaire;
 
 public class PageModificationController implements ICommand {
-  public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+  /**
+   * Méthode pour modifier les personnes et les stocker dans arrylist.
+   *
+   * @param request  request objet de classe HttpServletRequest
+   * @param response response objet de classe HttpServletResponse
+   * @return return le parm vers la page jsp de liste de creeEtModification
+   * @throws Exception objet de classe Exception
+   */
+  public String execute(final HttpServletRequest request,
+   final HttpServletResponse response) throws Exception {
     HttpSession session = request.getSession();
     if (session.getAttribute("compteurPage") == null) {
       session.setAttribute("compteurPage", 0);
-    }else{
+    } else {
       Integer compteurPage = (Integer) session.getAttribute("compteurPage");
       compteurPage++;
       session.setAttribute("compteurPage", compteurPage);
@@ -26,7 +35,7 @@ public class PageModificationController implements ICommand {
       }
       if (request.getParameterMap().containsKey("idSelectPersonne")) {
         Personne personne = utilitaire.getPersonnes()
-            .get(Integer.parseInt(request.getParameter("idSelectPersonne")) - 1);
+        .get(Integer.parseInt(request.getParameter("idSelectPersonne")) - 1);
         request.setAttribute("personneselectionne", personne);
       }
       if (request.getParameterMap().containsKey("idModifier")) {
@@ -47,7 +56,8 @@ public class PageModificationController implements ICommand {
       }
       return "creeEtModification.jsp";
     } catch (Exception e) {
-      request.setAttribute("msgErr ", e.getCause() + " calas is " + e.getClass());
+      request.setAttribute("msgErr", e.getCause() + " calas is "
+       + e.getClass());
       return "erreur.jsp";
     }
   }
