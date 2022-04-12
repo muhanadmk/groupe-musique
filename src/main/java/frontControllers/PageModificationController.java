@@ -1,8 +1,15 @@
 package frontControllers;
 
+import java.util.ArrayList;
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 import models.Personne;
 import models.forms.SaisiePersonForm;
@@ -18,7 +25,7 @@ public class PageModificationController implements ICommand {
    * @throws Exception objet de classe Exception
    */
   public String execute(final HttpServletRequest request,
-   final HttpServletResponse response) throws Exception {
+      final HttpServletResponse response) throws Exception {
     HttpSession session = request.getSession();
     if (session.getAttribute("compteurPage") == null) {
       session.setAttribute("compteurPage", 0);
@@ -35,28 +42,49 @@ public class PageModificationController implements ICommand {
       }
       if (request.getParameterMap().containsKey("idSelectPersonne")) {
         Personne personne = utilitaire.getPersonnes()
-        .get(Integer.parseInt(request.getParameter("idSelectPersonne")) - 1);
+            .get(Integer.parseInt(request.getParameter("idSelectPersonne")) - 1);
         request.setAttribute("personneselectionne", personne);
       }
       if (request.getParameterMap().containsKey("idModifier")) {
         Personne personne = utilitaire.getPersonnes()
             .get(Integer.parseInt(request.getParameter("idModifier")) - 1);
-        Personne personneAvantModif = personne;
-        SaisiePersonForm saisiePersonForm = new SaisiePersonForm();
-        saisiePersonForm.verifForm(request);
-        String resultat = saisiePersonForm.getResultat();
-        if (!resultat.trim().isEmpty()) {
-          request.setAttribute("personneselectionne", personneAvantModif);
-          request.setAttribute("errSaisiePersonForm", resultat);
+            String nom = personne.getNom();
+            String prenom = personne.getPrenom();
+        personne.setNom(request.getParameter("nom"));
+        personne.setPrenom(request.getParameter("prenom"));
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = (Validator) factory.getValidator();
+        Set<ConstraintViolation<Personne>> errorsValidation = validator.validate(personne);
+        if (errorsValidation.isEmpty()) {
+          SaisiePersonForm saisiePersonForm = new SaisiePersonForm();
+          saisiePersonForm.verifForm(request);
+          String resultat = saisiePersonForm.getResultat();
+          if (!resultat.trim().isEmpty()) {
+            personne.setNom(nom);
+            personne.setPrenom(prenom);
+            request.setAttribute("personneselectionne", personne);
+            request.setAttribute("errSaisiePersonForm", resultat);
+          } else {
+           personne.setNom(request.getParameter("nom"));
+           personne.setPrenom(request.getParameter("prenom"));
+          }
         } else {
-          personne.setNom(request.getParameter("nom"));
-          personne.setPrenom(request.getParameter("prenom"));
+          ArrayList <String>msgErrBeans = new ArrayList<String>();
+          for (ConstraintViolation<Personne> errorValidation : errorsValidation) {
+
+            msgErrBeans.add(
+             "("+errorValidation.getInvalidValue() +")"+
+             "" + errorValidation.getMessage());
+          }
+          request.setAttribute("personneselectionne", personne);
+          request.setAttribute("errSaisiePersonForm",
+           msgErrBeans.toString().substring(1, msgErrBeans.toString().length()-1));
         }
       }
       return "creeEtModification.jsp";
     } catch (Exception e) {
       request.setAttribute("msgErr", e.getCause() + " calas is "
-       + e.getClass());
+          + e.getClass());
       return "erreur.jsp";
     }
   }

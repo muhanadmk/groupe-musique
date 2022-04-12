@@ -11,9 +11,9 @@ public class Personne {
    * identifiant may not be null.
    * identifiant may not be empty.
    */
-  @NotNull(message = "identifiant may not be null")
-  @NotEmpty(message = "identifiant may not be empty")
-  private Integer identifiant;
+  // @NotNull(message = "identifiant may not be null")
+  // @NotEmpty(message = "identifiant may not be empty")
+  private Integer identifiant = 0;
   /**
    * pour avoir fair id dynamique.
    */
@@ -23,8 +23,8 @@ public class Personne {
    * first name may not be empty.
    * size doit etre moins de 30 et puls 2.
    */
-  @NotNull(message = "first name may not be null")
-  @NotEmpty(message = "first name may not be empty")
+  @NotNull(message = "prenom dois pas etre null")
+  @NotEmpty(message = "prenom dois pas etre empty")
   @Size(max = 30, message = "prenom dois moin que 30")
   @Size(min = 2, message = "pernom doit etre plus que 2 lettre")
   private String prenom;
@@ -34,9 +34,10 @@ public class Personne {
    *  name may not be empty.
    * size doit etre moins de 30 et puls 2.
    */
-  @NotNull(message = "Name may not be null")
-  @NotEmpty(message = "Name may not be empty")
+  @NotNull(message = "nom dois pas etre null")
+  @NotEmpty(message = "nom dois pas etre empty")
   @Size(max = 30, message = "nom dois moin que 30")
+  @Size(min = 2, message = "nom doit etre plus que 2 lettre")
   private String nom;
 
 /**

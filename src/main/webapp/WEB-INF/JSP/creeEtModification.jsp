@@ -48,12 +48,14 @@
           <div class="container">
             <h1 class="d-flex justify-content-center mb-4">
               <c:out value="${!empty creation ? 'creation' : 'modification'}" />  
-            </h1> 
-            <p class="d-flex justify-content-center text-danger">
-              ${errSaisiePersonForm}
-              </p>
+            </h1>
             <div class="row d-flex justify-content-center">
               <form class="col-lg-6 col-sm-12" method="post">
+                <c:if test="${!empty errSaisiePersonForm}">
+                  <div class="alert alert-danger" role="alert">
+                    ${!empty errSaisiePersonForm ? errSaisiePersonForm : '' }
+                  </div>
+                </c:if>
                 <div id="nomErr" class="form-input">
                   <label id="labNom" for="nom">nom :</label>
                   <input type="text" class="form-control nom" id="nom" name="nom"
