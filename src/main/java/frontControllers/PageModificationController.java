@@ -66,15 +66,14 @@ public class PageModificationController implements ICommand {
             request.setAttribute("errSaisiePersonForm", resultat);
           } else {
             DaoPersonne.save(personne);
-            personne.setNom(request.getParameter("nom"));
-            personne.setPrenom(request.getParameter("prenom"));
           }
         } else {
           ArrayList<String> msgErrBeans = new ArrayList<String>();
+          personne.setNom(nom);
+          personne.setPrenom(prenom);
           for (ConstraintViolation<Personne> errorValidation : errorsValidation) {
-
-            msgErrBeans.add(
-                "(" + errorValidation.getInvalidValue() + ")" +
+            msgErrBeans.add("La value que vous essaye de l'insere "
+               + "( " + errorValidation.getInvalidValue() + " )" +
                     "" + errorValidation.getMessage());
           }
           request.setAttribute("personneselectionne", personne);
