@@ -1,28 +1,32 @@
 package models;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-
+@Entity
+@Table(name = "personne")
 public class Personne {
-
   /**
    * identifiant may not be null.
    * identifiant may not be empty.
    */
-  // @NotNull(message = "identifiant may not be null")
-  // @NotEmpty(message = "identifiant may not be empty")
-  private Integer identifiant = 0;
-  /**
-   * pour avoir fair id dynamique.
-   */
-  private static Integer id = 1;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "idpersonne")
+  private Integer identifiant;
  /**
    * first name may not be null.
    * first name may not be empty.
    * size doit etre moins de 30 et puls 2.
    */
+  @Column(name = "prenom" ,length = 30, nullable = false)
   @NotNull(message = "prenom dois pas etre null")
   @NotEmpty(message = "prenom dois pas etre empty")
   @Size(max = 30, message = "prenom dois moin que 30")
@@ -34,6 +38,7 @@ public class Personne {
    *  name may not be empty.
    * size doit etre moins de 30 et puls 2.
    */
+  @Column(name = "nom" ,length = 30, nullable = false, unique = true)
   @NotNull(message = "nom dois pas etre null")
   @NotEmpty(message = "nom dois pas etre empty")
   @Size(max = 30, message = "nom dois moin que 30")
@@ -52,7 +57,6 @@ public class Personne {
    */
   public Personne(final String nomPersonne,
    final String prenomPersonne) {
-    this.identifiant = id++;
     setNom(nomPersonne);
     setPrenom(prenomPersonne);
   }
