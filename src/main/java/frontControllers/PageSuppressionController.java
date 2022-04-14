@@ -1,21 +1,27 @@
 package frontControllers;
 
+import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import utile.utilitaire;
+import dao.DaoPersonne;
+import models.Personne;
 
 public class PageSuppressionController implements ICommand {
+  private static final Logger LOGGER = Logger.getLogger(PageSuppressionController.class.getName());
+
   /**
-   * méthode pour Supprimer les personnes de  l'arrylist pour les afficher.
-   * @param request request objet de classe HttpServletRequest
+   * méthode pour Supprimer les personnes de l'arrylist pour les afficher.
+   * 
+   * @param request  request objet de classe HttpServletRequest
    * @param response response objet de classe HttpServletResponse
    * @return le parm vers la page jsp de suppression
    * @throws Exception objet de classe Exception
    */
   public String execute(final HttpServletRequest request,
-   final HttpServletResponse response) throws Exception {
+      final HttpServletResponse response) throws Exception {
     try {
       HttpSession session = request.getSession();
       if (session.getAttribute("compteurPage") == null) {
@@ -25,27 +31,24 @@ public class PageSuppressionController implements ICommand {
         compteurPage++;
         session.setAttribute("compteurPage", compteurPage);
       }
-      if (utilitaire.getPersonnes() != null
-       || !utilitaire.getPersonnes().isEmpty()) {
-        if (!request.getParameterMap().containsKey("personnes")) {
-          request.setAttribute("personnes", utilitaire.getPersonnes());
-        }
+      if (!DaoPersonne.findAll().isEmpty()) {
+          request.setAttribute("personnes", DaoPersonne.findAll());
+          request.setAttribute("listSuprimVide", "");
         if (request.getParameterMap().containsKey("idSelectPersonne")) {
-          utilitaire.getPersonnes()
-          .remove(Integer.parseInt(
-          request.getParameter("idSelectPersonne"))-1);
+          Personne personne = DaoPersonne.findPersonById(Integer.parseInt(request.getParameter("idSelectPersonne")));
+          DaoPersonne.delete(personne);
+          request.setAttribute("personnes", DaoPersonne.findAll());
+          request.setAttribute("personnesSize", DaoPersonne.findAll().size());
+          return "list.jsp";
         }
+      } else {
+        request.setAttribute("listSuprimVide", "Vous n'avez pas des adhérents à supprimer.");
       }
       return "suppression.jsp";
-    } catch (IndexOutOfBoundsException exception) {
-      request.setAttribute("msgListIsvide",
-      "vous avez pas des personnes a suprimer");
-      return "suppression.jsp";
     } catch (Exception e) {
-      request.setAttribute("msgErr", e.getCause() + " calas is "
-       + e.getClass());
+      request.setAttribute("msgErr", e.getMessage());
+      LOGGER.warning(e.getMessage());
       return "erreur.jsp";
     }
-
   }
 }

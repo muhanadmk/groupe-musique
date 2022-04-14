@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.transaction.Transaction;
 
 import exception.DaoException;
 import models.Personne;
@@ -16,8 +17,8 @@ public class DaoPersonne extends Personne {
 
   public DaoPersonne() {
   }
-  
-  public static Personne findPersonById(Integer id) throws Exception{
+
+  public static Personne findPersonById(Integer id) throws Exception {
     Personne personne = null;
     try {
       personne = entityManager.find(Personne.class, id);
@@ -27,6 +28,7 @@ public class DaoPersonne extends Personne {
     }
     return personne;
   }
+
   public static List<Personne> findAll() throws Exception {
     List<Personne> personnes = null;
     try {
@@ -50,5 +52,17 @@ public class DaoPersonne extends Personne {
       throw new DaoException("On n'a pas réussir à save l'objet dans la table personne.");
     }
     return null;
+  }
+
+  public static void delete(Personne personne) throws Exception {
+    try {
+      EntityTransaction entityTransaction = entityManager.getTransaction();
+      entityTransaction.begin();
+      entityManager.remove(personne);
+      entityTransaction.commit();
+    } catch (Exception e) {
+      LOGGER.warning("err bd delete" + e.getMessage());
+      throw new DaoException("On n'a pas réussir à delete l'objet dans la table personne.");
+    }
   }
 }

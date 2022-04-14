@@ -1,17 +1,22 @@
 package frontControllers;
 
+
+import java.util.logging.Logger;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import dao.DaoPersonne;
 import models.Personne;
-import utile.utilitaire;
 
 public class PagelistpersonnesController implements ICommand {
+  private static final Logger LOGGER = Logger.getLogger(PagelistpersonnesController.class.getName());
   /**
    * Méthode pour télécharger les personnes et
    * les stocker dans arrylist pour les afficher.
+   * 
    * @param request  request objet de classe HttpServletRequest
    * @param response response objet de classe HttpServletResponse
    * @return le parm vers la page jsp de liste de persoones
@@ -21,6 +26,7 @@ public class PagelistpersonnesController implements ICommand {
   public String execute(final HttpServletRequest request,
       final HttpServletResponse response) throws Exception {
     HttpSession session = request.getSession();
+    try {
     if (session.getAttribute("compteurPage") == null) {
       session.setAttribute("compteurPage", 0);
     } else {
@@ -36,18 +42,15 @@ public class PagelistpersonnesController implements ICommand {
         }
       }
     }
-    if (utilitaire.getPersonnes().isEmpty()) {
-      Personne personne = new Personne("mazen", "a");
-      Personne personne2 = new Personne("ahmed", "b");
-      Personne personne3 = new Personne("sham", "c");
-      utilitaire.getPersonnes().add(personne);
-      utilitaire.getPersonnes().add(personne2);
-      utilitaire.getPersonnes().add(personne3);
-      request.setAttribute("personnes", utilitaire.getPersonnes());
-      request.setAttribute("personnesSize", utilitaire.getPersonnes().size());
-    } else {
-      request.setAttribute("personnes", utilitaire.getPersonnes());
-      request.setAttribute("personnesSize", utilitaire.getPersonnes().size());
+    
+      if (!DaoPersonne.findAll().isEmpty()) {
+        request.setAttribute("personnes", DaoPersonne.findAll());
+        request.setAttribute("personnesSize", DaoPersonne.findAll().size());
+      }
+    } catch (Exception e) {
+      request.setAttribute("msgErr", e.getMessage());
+      LOGGER.warning(e.getMessage());
+      return "erreur.jsp";
     }
     return "list.jsp";
   }

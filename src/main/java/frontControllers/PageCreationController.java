@@ -2,6 +2,7 @@ package frontControllers;
 
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +17,8 @@ import models.Personne;
 import models.forms.SaisiePersonForm;
 
 public class PageCreationController implements ICommand {
+  private static final Logger LOGGER = Logger.getLogger(PageCreationController.class.getName());
+
   /**
    * Méthode pour Cree les personnes et les stocker dans arrylist.
    * 
@@ -35,6 +38,7 @@ public class PageCreationController implements ICommand {
       compteurPage++;
       session.setAttribute("compteurPage", compteurPage);
     }
+    request.setAttribute("creation", "creation");
     try {
       if (request.getParameterMap().containsKey("nom")
           && request.getParameterMap().containsKey("prenom")) {
@@ -52,6 +56,9 @@ public class PageCreationController implements ICommand {
             request.setAttribute("errSaisiePersonForm", resultat);
           } else {
             DaoPersonne.save(personne);
+            request.setAttribute("personnes", DaoPersonne.findAll());
+            request.setAttribute("personnesSize", DaoPersonne.findAll().size());
+            return "list.jsp";
           }
         } else {
           ArrayList<String> msgErrBeans= new ArrayList<String>();
@@ -65,11 +72,10 @@ public class PageCreationController implements ICommand {
           request.setAttribute("errSaisiePersonForm", msgErrBeans);
         }
       }
-      request.setAttribute("creation", "creation");
       return "creeEtModification.jsp";
     } catch (Exception e) {
-      request.setAttribute("msgErr", e.getCause() + " calas is "
-          + e.getClass());
+      request.setAttribute("msgErr" , e.getMessage());
+      LOGGER.warning(e.getMessage());
       return "erreur.jsp";
     }
   }

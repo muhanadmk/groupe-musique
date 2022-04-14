@@ -18,7 +18,8 @@
       <p class="col-lg-6 col-sm-12 alert alert-primary" role="alert">
         Le numéro de page lu est : <c:out value="${!empty sessionScope.compteurPage ? sessionScope.compteurPage :'Err in compteurPage'}"/>   
         </p>
-        <c:if test="${!empty personnes}">
+        <h1 class="d-flex justify-content-center">${!empty listSuprimVide ? listSuprimVide : ''}</h1>
+        <c:if test="${!empty personnes and empty listSuprimVide}">
           <h1 class="d-flex justify-content-center mb-4">suppression</h1>
           <form class="col-lg-6 col-sm-12" method="post">
             <div class="form-input mt-4">

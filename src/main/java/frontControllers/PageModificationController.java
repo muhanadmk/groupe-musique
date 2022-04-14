@@ -2,6 +2,7 @@ package frontControllers;
 
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +17,8 @@ import models.Personne;
 import models.forms.SaisiePersonForm;
 
 public class PageModificationController implements ICommand {
+  private static final Logger LOGGER = Logger.getLogger(PageModificationController.class.getName());
+
   /**
    * Méthode pour modifier les personnes et les stocker dans arrylist.
    *
@@ -36,18 +39,21 @@ public class PageModificationController implements ICommand {
     }
     try {
       if (!request.getParameterMap().containsKey("personnes")
-          && !request.getParameterMap().containsKey("idSelectPersonne")
-          && !request.getParameterMap().containsKey("errSaisiePersonForm")) {
-        request.setAttribute("personnes", DaoPersonne.findAll());
+      && !request.getParameterMap().containsKey("idSelectPersonne")
+      && !request.getParameterMap().containsKey("errSaisiePersonForm")) {
+        if (!DaoPersonne.findAll().isEmpty()) {
+          request.setAttribute("personnes", DaoPersonne.findAll());
+          request.setAttribute("listModifVide", "");
+        } else {
+          request.setAttribute("listModifVide", "Vous n'avez pas des adhérents à modifier.");
+        }
       }
       if (request.getParameterMap().containsKey("idSelectPersonne")) {
-        Personne personne = DaoPersonne.findPersonById
-        (Integer.parseInt(request.getParameter("idSelectPersonne")));
+        Personne personne = DaoPersonne.findPersonById(Integer.parseInt(request.getParameter("idSelectPersonne")));
         request.setAttribute("personneselectionne", personne);
       }
       if (request.getParameterMap().containsKey("idModifier")) {
-        Personne personne = DaoPersonne.findPersonById
-        (Integer.parseInt(request.getParameter("idModifier")));
+        Personne personne = DaoPersonne.findPersonById(Integer.parseInt(request.getParameter("idModifier")));
         String nom = personne.getNom();
         String prenom = personne.getPrenom();
         personne.setNom(request.getParameter("nom"));
@@ -66,6 +72,9 @@ public class PageModificationController implements ICommand {
             request.setAttribute("errSaisiePersonForm", resultat);
           } else {
             DaoPersonne.save(personne);
+            request.setAttribute("personnes", DaoPersonne.findAll());
+            request.setAttribute("personnesSize", DaoPersonne.findAll().size());
+            return "list.jsp";
           }
         } else {
           ArrayList<String> msgErrBeans = new ArrayList<String>();
@@ -73,8 +82,8 @@ public class PageModificationController implements ICommand {
           personne.setPrenom(prenom);
           for (ConstraintViolation<Personne> errorValidation : errorsValidation) {
             msgErrBeans.add("La value que vous essaye de l'insere "
-               + "( " + errorValidation.getInvalidValue() + " )" +
-                    "" + errorValidation.getMessage());
+                + "( " + errorValidation.getInvalidValue() + " )" +
+                "" + errorValidation.getMessage());
           }
           request.setAttribute("personneselectionne", personne);
           request.setAttribute("errSaisiePersonForm",
@@ -83,8 +92,7 @@ public class PageModificationController implements ICommand {
       }
       return "creeEtModification.jsp";
     } catch (Exception e) {
-      request.setAttribute("msgErr", e.getCause() + " calas is "
-          + e.getClass());
+      request.setAttribute("msgErr", e.getMessage());
       return "erreur.jsp";
     }
   }
