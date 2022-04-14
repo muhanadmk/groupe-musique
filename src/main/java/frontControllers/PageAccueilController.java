@@ -4,12 +4,20 @@
  */
 package frontControllers;
 
+
+
+import java.util.logging.Logger;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import dao.DaoPersonne;
+import models.Personne;
+
 public class PageAccueilController implements ICommand {
+  private static final Logger LOGGER =   Logger.getLogger(PageAccueilController.class.getName());
   /**
    * Méthode pour aficher la page de Accueil.
    * @param request request objet de classe HttpServletRequest

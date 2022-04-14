@@ -1,5 +1,6 @@
 package frontControllers;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,9 +11,9 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
+import dao.DaoPersonne;
 import models.Personne;
 import models.forms.SaisiePersonForm;
-import utile.utilitaire;
 
 public class PageCreationController implements ICommand {
   /**
@@ -25,6 +26,7 @@ public class PageCreationController implements ICommand {
    */
   public String execute(final HttpServletRequest request,
       final HttpServletResponse response) throws Exception {
+       
     HttpSession session = request.getSession();
     if (session.getAttribute("compteurPage") == null) {
       session.setAttribute("compteurPage", 0);
@@ -48,19 +50,19 @@ public class PageCreationController implements ICommand {
           if (!resultat.trim().isEmpty()) {
             request.setAttribute("personneselectionne", personne);
             request.setAttribute("errSaisiePersonForm", resultat);
-            saisiePersonForm.setResultat("");
           } else {
-            utilitaire.getPersonnes().add(personne);
+            DaoPersonne.save(personne);
           }
         } else {
-          String msgErrBeans="";
+          ArrayList<String> msgErrBeans= new ArrayList<String>();
           for (ConstraintViolation<Personne> errorValidation : errorsValidation) {
-            msgErrBeans = errorValidation.getInvalidValue()
-            + " " + errorValidation.getMessage();
+            msgErrBeans.add(
+                          "(" + errorValidation.getInvalidValue() + ")" +
+                          "" + errorValidation.getMessage());
           }
           request.setAttribute("personneselectionne", personne);
+          msgErrBeans.toString().substring(1, msgErrBeans.toString().length() - 1);
           request.setAttribute("errSaisiePersonForm", msgErrBeans);
-          errorsValidation.clear();
         }
       }
       request.setAttribute("creation", "creation");
