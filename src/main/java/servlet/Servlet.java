@@ -15,14 +15,22 @@ import frontControllers.PagelistpersonnesController;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.mysql.cj.jdbc.AbandonedConnectionCleanupThread;
 
 /**
  * cda08 AFPA.
@@ -30,7 +38,12 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(urlPatterns = { "/groupe-musique" })
 public class Servlet extends HttpServlet {
+private static final Logger LOGGER =   Logger.getLogger(PageAccueilController.class.getName());
 
+private static EntityManagerFactory entityManagerFactory = null;
+private static EntityManager entityManager = null; 
+private static String urlSuite = null;
+  
   /**
    * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
    * methods.
@@ -41,7 +54,7 @@ public class Servlet extends HttpServlet {
    * @throws IOException      if an I/O error occurs
    */
 
-  private Map<String, Object> commands = new HashMap<String, Object>();
+  private Map<String, ICommand> commands = new HashMap<String, ICommand>();
   /**
    * Méthode pour installation de les paramètres de les URL de l'application
    * Chaque commande va appeler un l'objet
@@ -54,13 +67,38 @@ public class Servlet extends HttpServlet {
     commands.put("cree", new PageCreationController());
     commands.put("modifier", new PageModificationController());
     commands.put("suppression", new PageSuppressionController());
+
+    try {
+      entityManagerFactory = Persistence.createEntityManagerFactory("bdMysql");
+      entityManager =  entityManagerFactory.createEntityManager();
+      LOGGER.info("conne bd bien fait");
+    } catch (Exception e) {
+      LOGGER.warning("err in con init " + e.getMessage() + e.getCause());
+      urlSuite = "erreur.jsp";
+    }
+
+  }
+  
+  public void distroy(){
+    try {
+      DriverManager.deregisterDriver(DriverManager.getDriver("com.mysql.cj.jdbc.Driver"));
+   } catch (SQLException e) {
+      LOGGER.info("driver erreur "+e.getMessage());
+   }
+   AbandonedConnectionCleanupThread.checkedShutdown();
+
+    try {
+      entityManagerFactory.close();
+    } catch (Exception e) {
+      LOGGER.warning("err con  distroy" + e.getMessage());
+      urlSuite = "erreur.jsp";
+    }
   }
 
   protected final void processRequest(final HttpServletRequest request,
    final HttpServletResponse response)
       throws ServletException, IOException {
     response.setContentType("text/html;charset=UTF-8");
-    String urlSuite = null;
     try (PrintWriter out = response.getWriter()) {
       String cmd = request.getParameter("cmd");
       ICommand com = (ICommand) commands.get(cmd);
@@ -102,5 +140,10 @@ public class Servlet extends HttpServlet {
       throws ServletException, IOException {
     processRequest(request, response);
   }
+
+  public static EntityManager getEntityManager() {
+    return entityManager;
+  }
+
 
 }
