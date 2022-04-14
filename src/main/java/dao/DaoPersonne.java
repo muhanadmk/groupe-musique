@@ -16,6 +16,17 @@ public class DaoPersonne extends Personne {
 
   public DaoPersonne() {
   }
+  
+  public static Personne findPersonById(Integer id) throws Exception{
+    Personne personne = null;
+    try {
+      personne = entityManager.find(Personne.class, id);
+    } catch (Exception e) {
+      LOGGER.warning("On n'a pas réussir à lire la table personne." + e.getMessage());
+      throw new DaoException("On n'a pas réussir à lire la table personne.");
+    }
+    return personne;
+  }
   public static List<Personne> findAll() throws Exception {
     List<Personne> personnes = null;
     try {
@@ -34,7 +45,6 @@ public class DaoPersonne extends Personne {
       entityManager.merge(personne);
       entityManager.flush();
       entityTransaction.commit();
-      LOGGER.info("msg ajout personne");
     } catch (Exception e) {
       LOGGER.warning("err bd " + e.getMessage());
       throw new DaoException("On n'a pas réussir à save l'objet dans la table personne.");

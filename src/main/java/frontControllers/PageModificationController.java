@@ -11,9 +11,9 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
+import dao.DaoPersonne;
 import models.Personne;
 import models.forms.SaisiePersonForm;
-import utile.utilitaire;
 
 public class PageModificationController implements ICommand {
   /**
@@ -38,18 +38,18 @@ public class PageModificationController implements ICommand {
       if (!request.getParameterMap().containsKey("personnes")
           && !request.getParameterMap().containsKey("idSelectPersonne")
           && !request.getParameterMap().containsKey("errSaisiePersonForm")) {
-        request.setAttribute("personnes", utilitaire.getPersonnes());
+        request.setAttribute("personnes", DaoPersonne.findAll());
       }
       if (request.getParameterMap().containsKey("idSelectPersonne")) {
-        Personne personne = utilitaire.getPersonnes()
-            .get(Integer.parseInt(request.getParameter("idSelectPersonne")) - 1);
+        Personne personne = DaoPersonne.findPersonById
+        (Integer.parseInt(request.getParameter("idSelectPersonne")));
         request.setAttribute("personneselectionne", personne);
       }
       if (request.getParameterMap().containsKey("idModifier")) {
-        Personne personne = utilitaire.getPersonnes()
-            .get(Integer.parseInt(request.getParameter("idModifier")) - 1);
-            String nom = personne.getNom();
-            String prenom = personne.getPrenom();
+        Personne personne = DaoPersonne.findPersonById
+        (Integer.parseInt(request.getParameter("idModifier")));
+        String nom = personne.getNom();
+        String prenom = personne.getPrenom();
         personne.setNom(request.getParameter("nom"));
         personne.setPrenom(request.getParameter("prenom"));
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -65,20 +65,21 @@ public class PageModificationController implements ICommand {
             request.setAttribute("personneselectionne", personne);
             request.setAttribute("errSaisiePersonForm", resultat);
           } else {
-           personne.setNom(request.getParameter("nom"));
-           personne.setPrenom(request.getParameter("prenom"));
+            DaoPersonne.save(personne);
+            personne.setNom(request.getParameter("nom"));
+            personne.setPrenom(request.getParameter("prenom"));
           }
         } else {
-          ArrayList <String>msgErrBeans = new ArrayList<String>();
+          ArrayList<String> msgErrBeans = new ArrayList<String>();
           for (ConstraintViolation<Personne> errorValidation : errorsValidation) {
 
             msgErrBeans.add(
-             "("+errorValidation.getInvalidValue() +")"+
-             "" + errorValidation.getMessage());
+                "(" + errorValidation.getInvalidValue() + ")" +
+                    "" + errorValidation.getMessage());
           }
           request.setAttribute("personneselectionne", personne);
           request.setAttribute("errSaisiePersonForm",
-           msgErrBeans.toString().substring(1, msgErrBeans.toString().length()-1));
+              msgErrBeans.toString().substring(1, msgErrBeans.toString().length() - 1));
         }
       }
       return "creeEtModification.jsp";
