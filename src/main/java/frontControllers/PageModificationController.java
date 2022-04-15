@@ -45,7 +45,8 @@ public class PageModificationController implements ICommand {
           request.setAttribute("personnes", DaoPersonne.findAll());
           request.setAttribute("listModifVide", "");
         } else {
-          request.setAttribute("listModifVide", "Vous n'avez pas des adhérents à modifier.");
+          request.setAttribute("listModifVide",
+          "Vous n'avez pas des adhérents à modifier.");
         }
       }
       if (request.getParameterMap().containsKey("idSelectPersonne")) {
@@ -93,6 +94,7 @@ public class PageModificationController implements ICommand {
       return "creeEtModification.jsp";
     } catch (Exception e) {
       request.setAttribute("msgErr", e.getMessage());
+      LOGGER.warning(e.getMessage());
       return "erreur.jsp";
     }
   }

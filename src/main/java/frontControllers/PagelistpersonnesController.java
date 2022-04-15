@@ -1,6 +1,7 @@
 package frontControllers;
 
 
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import javax.servlet.http.Cookie;
@@ -8,11 +9,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import antlr.collections.List;
 import dao.DaoPersonne;
 import models.Personne;
 
 public class PagelistpersonnesController implements ICommand {
-  private static final Logger LOGGER = Logger.getLogger(PagelistpersonnesController.class.getName());
+  private static final Logger LOGGER = Logger.getLogger
+  (PagelistpersonnesController.class.getName());
   /**
    * Méthode pour télécharger les personnes et
    * les stocker dans arrylist pour les afficher.
@@ -42,11 +45,12 @@ public class PagelistpersonnesController implements ICommand {
         }
       }
     }
-    
+    if (!request.getParameterMap().containsKey("personnes")) {
       if (!DaoPersonne.findAll().isEmpty()) {
         request.setAttribute("personnes", DaoPersonne.findAll());
         request.setAttribute("personnesSize", DaoPersonne.findAll().size());
       }
+    }
     } catch (Exception e) {
       request.setAttribute("msgErr", e.getMessage());
       LOGGER.warning(e.getMessage());

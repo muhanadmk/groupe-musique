@@ -56,9 +56,11 @@ public class PageCreationController implements ICommand {
             request.setAttribute("errSaisiePersonForm", resultat);
           } else {
             DaoPersonne.save(personne);
-            request.setAttribute("personnes", DaoPersonne.findAll());
-            request.setAttribute("personnesSize", DaoPersonne.findAll().size());
-            return "list.jsp";
+            if (!DaoPersonne.findAll().equals(null) || !DaoPersonne.findAll().isEmpty() ) {
+              request.setAttribute("personnes", DaoPersonne.findAll());
+              request.setAttribute("personnesSize", DaoPersonne.findAll().size());
+              return "list.jsp";
+            } 
           }
         } else {
           ArrayList<String> msgErrBeans= new ArrayList<String>();

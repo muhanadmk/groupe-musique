@@ -35,8 +35,7 @@ public class PageSuppressionController implements ICommand {
           request.setAttribute("personnes", DaoPersonne.findAll());
           request.setAttribute("listSuprimVide", "");
         if (request.getParameterMap().containsKey("idSelectPersonne")) {
-          Personne personne = DaoPersonne.findPersonById(Integer.parseInt(request.getParameter("idSelectPersonne")));
-          DaoPersonne.delete(personne);
+          DaoPersonne.delete(Integer.parseInt(request.getParameter("idSelectPersonne")));
           request.setAttribute("personnes", DaoPersonne.findAll());
           request.setAttribute("personnesSize", DaoPersonne.findAll().size());
           return "list.jsp";
