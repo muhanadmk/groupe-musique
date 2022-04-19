@@ -12,11 +12,14 @@ import frontControllers.PageCreationController;
 import frontControllers.PageModificationController;
 import frontControllers.PageSuppressionController;
 import frontControllers.PagelistpersonnesController;
+import models.Groupe;
+import models.Personne;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -26,9 +29,11 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.mysql.cj.jdbc.AbandonedConnectionCleanupThread;
 
@@ -38,12 +43,23 @@ import com.mysql.cj.jdbc.AbandonedConnectionCleanupThread;
  */
 @WebServlet(urlPatterns = { "/groupe-musique" })
 public class Servlet extends HttpServlet {
-private static final Logger LOGGER =   Logger.getLogger(PageAccueilController.class.getName());
-
+   /**
+   * LOGGER.
+   */
+private static final Logger LOGGER = Logger.getLogger(
+  Servlet.class.getName());
+/**
+ * objet qui fabrice entityManager qui fait le conn à bd.
+ */
 private static EntityManagerFactory entityManagerFactory = null;
-private static EntityManager entityManager = null; 
+/**
+ *  objet entityManager qui fait le conn à bd.
+ */
+private static EntityManager entityManager = null;
+/**
+ * urlSuite vers notre java Controller.
+ */
 private static String urlSuite = null;
-  
   /**
    * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
    * methods.
@@ -78,12 +94,15 @@ private static String urlSuite = null;
     }
 
   }
-  
-  public void distroy(){
+  /**
+   * distroy Servlet.
+   */
+  public void distroy() {
     try {
-      DriverManager.deregisterDriver(DriverManager.getDriver("com.mysql.cj.jdbc.Driver"));
+      DriverManager.deregisterDriver(
+        DriverManager.getDriver("com.mysql.cj.jdbc.Driver"));
    } catch (SQLException e) {
-      LOGGER.info("driver erreur "+e.getMessage());
+      LOGGER.info("driver erreur " + e.getMessage());
    }
    AbandonedConnectionCleanupThread.checkedShutdown();
 
@@ -100,6 +119,25 @@ private static String urlSuite = null;
       throws ServletException, IOException {
     response.setContentType("text/html;charset=UTF-8");
     try (PrintWriter out = response.getWriter()) {
+      // Personne personne = new Personne("fffsfs","fff");
+      // Personne personne2 = new Personne("fffs","ffff");
+      // ArrayList<Personne> personnes = new ArrayList<Personne>();
+      // personnes.add(personne);
+      // personnes.add(personne2);
+      // Groupe groupe = new Groupe(0,"groupe",personnes);
+      // entityManager.persist(groupe);
+      Cookie cookiePrenom = new Cookie("prenom", "muhanad");
+      cookiePrenom.setMaxAge(60*60*24);
+      response.addCookie(cookiePrenom);
+      
+      HttpSession session = request.getSession();
+      if (session.getAttribute("compteurPage") == null) {
+        session.setAttribute("compteurPage", 0);
+      } else {
+        Integer compteurPage = (Integer) session.getAttribute("compteurPage");
+        compteurPage++;
+        session.setAttribute("compteurPage", compteurPage);
+      }
       String cmd = request.getParameter("cmd");
       ICommand com = (ICommand) commands.get(cmd);
       urlSuite = com.execute(request, response);
@@ -140,7 +178,10 @@ private static String urlSuite = null;
       throws ServletException, IOException {
     processRequest(request, response);
   }
-
+/**
+ * objet entityManager qui fait le conn à bd.
+ * @return objet entityManager
+ */
   public static EntityManager getEntityManager() {
     return entityManager;
   }

@@ -5,13 +5,16 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "personne")
+@Table(name = "personnes")
 public class Personne {
   /**
    * identifiant may not be null.
@@ -45,6 +48,9 @@ public class Personne {
   @Size(min = 2, message = "nom doit etre plus que 2 lettre")
   private String nom;
 
+  @ManyToOne()
+  private Groupe groupe;
+
 /**
  * constructeur implicit.
  */
@@ -59,6 +65,13 @@ public class Personne {
    final String prenomPersonne) {
     setNom(nomPersonne);
     setPrenom(prenomPersonne);
+  }
+
+  public Personne(Integer identifiant, String prenom, String nom, Groupe groupe) {
+   // this.identifiant = identifiant;
+    this.prenom = prenom;
+    this.nom = nom;
+    this.groupe = groupe;
   }
 
   /**
@@ -106,6 +119,16 @@ public class Personne {
   public void setPrenom(final String prenomPersonne) {
     this.prenom = prenomPersonne;
   }
+
+  public Groupe getGroupe() {
+    return this.groupe;
+  }
+
+  public void setGroupe(Groupe groupe) {
+    this.groupe = groupe;
+  }
+
+
   @Override
   public final String toString() {
     return "{"
