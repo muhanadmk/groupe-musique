@@ -8,18 +8,18 @@ package servlet;
 
 import frontControllers.ICommand;
 import frontControllers.PageAccueilController;
+import frontControllers.PageConnectionUser;
 import frontControllers.PageCreationController;
+import frontControllers.PageLogInController;
 import frontControllers.PageModificationController;
 import frontControllers.PageSuppressionController;
 import frontControllers.PagelistpersonnesController;
-import models.Groupe;
-import models.Personne;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.SecureRandom;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -36,6 +36,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.mysql.cj.jdbc.AbandonedConnectionCleanupThread;
+
+
 
 /**
  * cda08 AFPA.
@@ -71,6 +73,9 @@ private static String urlSuite = null;
    */
 
   private Map<String, ICommand> commands = new HashMap<String, ICommand>();
+
+  private Map<String, ICommand> admin = new HashMap<String, ICommand>();
+
   /**
    * Méthode pour installation de les paramètres de les URL de l'application
    * Chaque commande va appeler un l'objet
@@ -79,10 +84,18 @@ private static String urlSuite = null;
 
   public void init() {
     commands.put(null, new PageAccueilController());
+    commands.put("login", new PageLogInController());
+    commands.put("sinup", new PageConnectionUser());
     commands.put("list", new PagelistpersonnesController());
     commands.put("cree", new PageCreationController());
     commands.put("modifier", new PageModificationController());
     commands.put("suppression", new PageSuppressionController());
+
+    admin.put("cree", new PageCreationController());
+    admin.put("modifier", new PageModificationController());
+    admin.put("suppression", new PageSuppressionController());
+
+  
 
     try {
       entityManagerFactory = Persistence.createEntityManagerFactory("bdMysql");
@@ -117,20 +130,23 @@ private static String urlSuite = null;
   protected final void processRequest(final HttpServletRequest request,
    final HttpServletResponse response)
       throws ServletException, IOException {
-    response.setContentType("text/html;charset=UTF-8");
-    try (PrintWriter out = response.getWriter()) {
-      // Personne personne = new Personne("fffsfs","fff");
-      // Personne personne2 = new Personne("fffs","ffff");
-      // ArrayList<Personne> personnes = new ArrayList<Personne>();
-      // personnes.add(personne);
-      // personnes.add(personne2);
-      // Groupe groupe = new Groupe(0,"groupe",personnes);
-      // entityManager.persist(groupe);
+   response.setContentType("text/html;charset=UTF-8");
+   try (PrintWriter out = response.getWriter()) {
       Cookie cookiePrenom = new Cookie("prenom", "muhanad");
       cookiePrenom.setMaxAge(60*60*24);
       response.addCookie(cookiePrenom);
       
       HttpSession session = request.getSession();
+      
+      if (session.getAttribute("tokenSession") == null) {
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[100];
+        random.nextBytes(salt);
+        session.setAttribute("tokenSession", salt);
+      }
+     
+     
+
       if (session.getAttribute("compteurPage") == null) {
         session.setAttribute("compteurPage", 0);
       } else {
@@ -138,9 +154,14 @@ private static String urlSuite = null;
         compteurPage++;
         session.setAttribute("compteurPage", compteurPage);
       }
+      
       String cmd = request.getParameter("cmd");
       ICommand com = (ICommand) commands.get(cmd);
+     
       urlSuite = com.execute(request, response);
+      if (urlSuite.equals("") ) {
+        
+      }
       request.getRequestDispatcher("/WEB-INF/JSP/" + urlSuite)
       .forward(request, response);
     } catch (Exception e) {
