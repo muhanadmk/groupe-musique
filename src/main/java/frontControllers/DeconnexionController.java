@@ -10,7 +10,8 @@ public class DeconnexionController implements ICommand{
   @Override
   public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
     HttpSession session = request.getSession();
-    session.invalidate();
+    session.setAttribute("admin", null);
+    session.setAttribute("logout", "logout");
     return "connexionUser.jsp";
   }
   

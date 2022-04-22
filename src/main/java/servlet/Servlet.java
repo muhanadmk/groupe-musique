@@ -16,11 +16,9 @@ import frontControllers.PageLogInController;
 import frontControllers.PageModificationController;
 import frontControllers.PageSuppressionController;
 import models.User;
-import utile.HashageUser;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.security.SecureRandom;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -32,17 +30,12 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.mysql.cj.jdbc.AbandonedConnectionCleanupThread;
-
-import org.apache.velocity.app.event.ReferenceInsertionEventHandler.referenceInsertExecutor;
-
-import dao.DaoUser;
 
 /**
  * cda08 AFPA.
@@ -91,14 +84,14 @@ public class Servlet extends HttpServlet {
    */
 
   public void init() {
-    commands.put(null, new PageAccueilController());
+    commands.put("accueil", new PageAccueilController());
     commands.put("login", new PageLogInController());
     commands.put("sinup", new PageConnectionUserController());
     commands.put("logout", new DeconnexionController());
     commands.put("cree", new PageCreationController());
     commands.put("modifier", new PageModificationController());
     commands.put("suppression", new PageSuppressionController());
-    
+
     admin.put("cree", "admin");
     admin.put("modifier", "admin");
     admin.put("suppression", "admin");
@@ -140,22 +133,40 @@ public class Servlet extends HttpServlet {
     response.setContentType("text/html;charset=UTF-8");
     try (PrintWriter out = response.getWriter()) {
       HttpSession session = request.getSession();
+      if (session.getAttribute("compteurPage") == null) {
+        session.setAttribute("compteurPage", 0);
+      } else {
+        Integer compteurPage = (Integer) session.getAttribute("compteurPage");
+        compteurPage++;
+        session.setAttribute("compteurPage", compteurPage);
+      }
       cmd = request.getParameter("cmd");
       ICommand com = (ICommand) commands.get(cmd);
-      if (session.getAttribute("admin") != "admin") {
+      if (session.getAttribute("admin") == null) {
         if (admin.containsKey(cmd)) {
-          com = (ICommand) commands.get("login");;
+          com = (ICommand) commands.get("login");
+          request.setAttribute("msgNotAdmin",
+              "Vous devez faire le log-in pour manipuler dans le site.");
+        }
+        if (cmd.equals("logout")) {
+          if (session.getAttribute("logout").toString().equals("logout")) {
+            com = (ICommand) commands.get("login");
+          }
         }
         urlSuite = com.execute(request, response);
         request.getRequestDispatcher("/WEB-INF/JSP/" + urlSuite)
-          .forward(request, response);
-      }else{
+            .forward(request, response);
+      }
+      if (session.getAttribute("admin").toString().equals("admin")) {
         urlSuite = com.execute(request, response);
         request.getRequestDispatcher("/WEB-INF/JSP/" + urlSuite)
             .forward(request, response);
       }
     } catch (Exception e) {
       urlSuite = "erreur.jsp";
+      request.getRequestDispatcher("/WEB-INF/JSP/" + urlSuite)
+          .forward(request, response);
+    } finally {
       request.getRequestDispatcher("/WEB-INF/JSP/" + urlSuite)
           .forward(request, response);
     }

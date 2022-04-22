@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import dao.DaoUser;
 import models.User;
-import utile.HashageUser;
+import models.forms.UserFrom;
 
 public class PageConnectionUserController implements ICommand {
   public PageConnectionUserController(){}
@@ -22,9 +22,9 @@ public class PageConnectionUserController implements ICommand {
   public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
     if (request.getParameterMap().containsKey("user")
         && request.getParameterMap().containsKey("password")) {
-          String sel = HashageUser.getSalt();
+          String sel = UserFrom.getSalt();
           User user = new User(request.getParameter("user"),
-          HashageUser.getSecurePassword(request.getParameter("password"),sel),sel);
+          UserFrom.getSecurePassword(request.getParameter("password"),sel),sel);
           DaoUser.save(user);
           return "list.jsp";
     }

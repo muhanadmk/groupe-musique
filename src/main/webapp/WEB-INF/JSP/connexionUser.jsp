@@ -19,7 +19,11 @@
     <main class="form-signin container col-lg-4 col-sm-12 mt-5">
       <form method="post">
         <h1 class="h3 mb-3 fw-normal"> Please sign in</h1>
-        
+        <c:if test="${!empty msgNotAdmin}">
+          <p class="alert alert-primary" role="alert">
+           ${msgNotAdmin}
+          </p>
+        </c:if>
         <div class="form-floating">
           <input type="text" class="form-control" id="floatingInput" name="user" placeholder="user">
           <label for="floatingInput">Email address</label>

@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import dao.DaoPersonne;
 
@@ -32,6 +33,8 @@ public class PageAccueilController implements ICommand {
       final HttpServletResponse response) throws Exception {
         
     try {
+      // HttpSession session = request.getSession();
+      // session.setAttribute("admin", null);
       Cookie[] cookies = request.getCookies();
       if (cookies != null) {
         for (Cookie cookie : cookies) {

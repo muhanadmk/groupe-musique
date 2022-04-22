@@ -1,16 +1,17 @@
-package utile;
+package models.forms;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.logging.Logger;
 
-public class HashageUser {
-/**
+public class UserFrom {
+  /**
    * LOGGER.
    */
   private static final Logger LOGGER = Logger.getLogger(
-    HashageUser.class.getName());
+    UserFrom.class.getName());
+    
   public static String getSecurePassword(String password, String salt) {
     String toReturn = null;
     try {
