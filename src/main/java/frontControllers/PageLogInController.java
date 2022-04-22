@@ -4,12 +4,15 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import dao.DaoUser;
 import models.User;
+import servlet.Servlet;
 import utile.HashageUser;
 
 public class PageLogInController implements ICommand {
+  public PageLogInController(){}
 
   /**
  * LOGGER.
@@ -24,11 +27,10 @@ private static final Logger LOGGER = Logger.getLogger(
       User user = DaoUser.findUserByName(request.getParameter("user"));
       String passwordBd = HashageUser.getSecurePassword(request.getParameter("password"), user.getSel());
       if (user.getPassword().equals(passwordBd)) {
-        request.setAttribute("userAuthentifi", "user a deja passé l'authentification");
+        HttpSession session = request.getSession();
+        session.setAttribute("admin", "admin");
         return "list.jsp";
-      } else {
-        request.setAttribute("userAuthentifi", "user non authentifié");
-      }
+      } 
     }
     return "connexionUser.jsp";
   }

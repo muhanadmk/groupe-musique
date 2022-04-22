@@ -17,7 +17,13 @@ import models.Personne;
 import models.forms.SaisiePersonForm;
 
 public class PageModificationController implements ICommand {
-  private static final Logger LOGGER = Logger.getLogger(PageModificationController.class.getName());
+  public PageModificationController(){}
+
+    /**
+   * LOGGER.
+   */
+  private static final Logger LOGGER = Logger.getLogger(
+    PageModificationController.class.getName());
 
   /**
    * Méthode pour modifier les personnes et les stocker dans arrylist.
@@ -29,14 +35,6 @@ public class PageModificationController implements ICommand {
    */
   public String execute(final HttpServletRequest request,
       final HttpServletResponse response) throws Exception {
-    HttpSession session = request.getSession();
-    if (session.getAttribute("compteurPage") == null) {
-      session.setAttribute("compteurPage", 0);
-    } else {
-      Integer compteurPage = (Integer) session.getAttribute("compteurPage");
-      compteurPage++;
-      session.setAttribute("compteurPage", compteurPage);
-    }
     try {
       if (!request.getParameterMap().containsKey("personnes")
       && !request.getParameterMap().containsKey("idSelectPersonne")
@@ -50,18 +48,21 @@ public class PageModificationController implements ICommand {
         }
       }
       if (request.getParameterMap().containsKey("idSelectPersonne")) {
-        Personne personne = DaoPersonne.findPersonById(Integer.parseInt(request.getParameter("idSelectPersonne")));
+        Personne personne = DaoPersonne.findPersonById(
+          Integer.parseInt(request.getParameter("idSelectPersonne")));
         request.setAttribute("personneselectionne", personne);
       }
       if (request.getParameterMap().containsKey("idModifier")) {
-        Personne personne = DaoPersonne.findPersonById(Integer.parseInt(request.getParameter("idModifier")));
+        Personne personne = DaoPersonne.findPersonById(
+          Integer.parseInt(request.getParameter("idModifier")));
         String nom = personne.getNom();
         String prenom = personne.getPrenom();
         personne.setNom(request.getParameter("nom"));
         personne.setPrenom(request.getParameter("prenom"));
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = (Validator) factory.getValidator();
-        Set<ConstraintViolation<Personne>> errorsValidation = validator.validate(personne);
+        Set<ConstraintViolation<Personne>> errorsValidation
+         = validator.validate(personne);
         if (errorsValidation.isEmpty()) {
           SaisiePersonForm saisiePersonForm = new SaisiePersonForm();
           saisiePersonForm.verifForm(request);
@@ -81,14 +82,16 @@ public class PageModificationController implements ICommand {
           ArrayList<String> msgErrBeans = new ArrayList<String>();
           personne.setNom(nom);
           personne.setPrenom(prenom);
-          for (ConstraintViolation<Personne> errorValidation : errorsValidation) {
+          for (ConstraintViolation<Personne>
+          errorValidation : errorsValidation) {
             msgErrBeans.add("La value que vous essaye de l'insere "
-                + "( " + errorValidation.getInvalidValue() + " )" +
-                "" + errorValidation.getMessage());
+                + "( " + errorValidation.getInvalidValue() + " )"
+                + "" + errorValidation.getMessage());
           }
           request.setAttribute("personneselectionne", personne);
           request.setAttribute("errSaisiePersonForm",
-              msgErrBeans.toString().substring(1, msgErrBeans.toString().length() - 1));
+              msgErrBeans.toString().substring(
+                1, msgErrBeans.toString().length() - 1));
         }
       }
       return "creeEtModification.jsp";

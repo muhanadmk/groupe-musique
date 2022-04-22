@@ -17,9 +17,8 @@
     <%@ include file="header.jsp" %>
 
     <main class="form-signin container col-lg-4 col-sm-12 mt-5">
-      <h1>${userAuthentifi}</h1>
       <form method="post">
-        <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+        <h1 class="h3 mb-3 fw-normal"> Please sign in</h1>
         
         <div class="form-floating">
           <input type="text" class="form-control" id="floatingInput" name="user" placeholder="user">

@@ -1,5 +1,7 @@
 package servlet;
 
+import frontControllers.DeconnexionController;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -8,12 +10,13 @@ package servlet;
 
 import frontControllers.ICommand;
 import frontControllers.PageAccueilController;
-import frontControllers.PageConnectionUser;
+import frontControllers.PageConnectionUserController;
 import frontControllers.PageCreationController;
 import frontControllers.PageLogInController;
 import frontControllers.PageModificationController;
 import frontControllers.PageSuppressionController;
-import frontControllers.PagelistpersonnesController;
+import models.User;
+import utile.HashageUser;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -37,31 +40,36 @@ import javax.servlet.http.HttpSession;
 
 import com.mysql.cj.jdbc.AbandonedConnectionCleanupThread;
 
+import org.apache.velocity.app.event.ReferenceInsertionEventHandler.referenceInsertExecutor;
 
+import dao.DaoUser;
 
 /**
  * cda08 AFPA.
+ * 
  * @author Muhanad ALMOKDAD
  */
 @WebServlet(urlPatterns = { "/groupe-musique" })
 public class Servlet extends HttpServlet {
-   /**
+  /**
    * LOGGER.
    */
-private static final Logger LOGGER = Logger.getLogger(
-  Servlet.class.getName());
-/**
- * objet qui fabrice entityManager qui fait le conn à bd.
- */
-private static EntityManagerFactory entityManagerFactory = null;
-/**
- *  objet entityManager qui fait le conn à bd.
- */
-private static EntityManager entityManager = null;
-/**
- * urlSuite vers notre java Controller.
- */
-private static String urlSuite = null;
+  private static final Logger LOGGER = Logger.getLogger(
+      Servlet.class.getName());
+  /**
+   * objet qui fabrice entityManager qui fait le conn à bd.
+   */
+  private static EntityManagerFactory entityManagerFactory = null;
+  /**
+   * objet entityManager qui fait le conn à bd.
+   */
+  private static EntityManager entityManager = null;
+  /**
+   * urlSuite vers notre java Controller.
+   */
+  private static String urlSuite = null;
+
+  private static String cmd;
   /**
    * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
    * methods.
@@ -74,32 +82,30 @@ private static String urlSuite = null;
 
   private Map<String, ICommand> commands = new HashMap<String, ICommand>();
 
-  private Map<String, ICommand> admin = new HashMap<String, ICommand>();
+  private Map<String, String> admin = new HashMap<String, String>();
 
   /**
    * Méthode pour installation de les paramètres de les URL de l'application
    * Chaque commande va appeler un l'objet
-   *  de la class contrôleur lié à la valeur de le paramètre.
+   * de la class contrôleur lié à la valeur de le paramètre.
    */
 
   public void init() {
     commands.put(null, new PageAccueilController());
     commands.put("login", new PageLogInController());
-    commands.put("sinup", new PageConnectionUser());
-    commands.put("list", new PagelistpersonnesController());
+    commands.put("sinup", new PageConnectionUserController());
+    commands.put("logout", new DeconnexionController());
     commands.put("cree", new PageCreationController());
     commands.put("modifier", new PageModificationController());
     commands.put("suppression", new PageSuppressionController());
-
-    admin.put("cree", new PageCreationController());
-    admin.put("modifier", new PageModificationController());
-    admin.put("suppression", new PageSuppressionController());
-
-  
+    
+    admin.put("cree", "admin");
+    admin.put("modifier", "admin");
+    admin.put("suppression", "admin");
 
     try {
       entityManagerFactory = Persistence.createEntityManagerFactory("bdMysql");
-      entityManager =  entityManagerFactory.createEntityManager();
+      entityManager = entityManagerFactory.createEntityManager();
       LOGGER.info("conne bd bien fait");
     } catch (Exception e) {
       LOGGER.warning("err in con init " + e.getMessage() + e.getCause());
@@ -107,17 +113,18 @@ private static String urlSuite = null;
     }
 
   }
+
   /**
    * distroy Servlet.
    */
   public void distroy() {
     try {
       DriverManager.deregisterDriver(
-        DriverManager.getDriver("com.mysql.cj.jdbc.Driver"));
-   } catch (SQLException e) {
+          DriverManager.getDriver("com.mysql.cj.jdbc.Driver"));
+    } catch (SQLException e) {
       LOGGER.info("driver erreur " + e.getMessage());
-   }
-   AbandonedConnectionCleanupThread.checkedShutdown();
+    }
+    AbandonedConnectionCleanupThread.checkedShutdown();
 
     try {
       entityManagerFactory.close();
@@ -128,48 +135,32 @@ private static String urlSuite = null;
   }
 
   protected final void processRequest(final HttpServletRequest request,
-   final HttpServletResponse response)
+      final HttpServletResponse response)
       throws ServletException, IOException {
-   response.setContentType("text/html;charset=UTF-8");
-   try (PrintWriter out = response.getWriter()) {
-      Cookie cookiePrenom = new Cookie("prenom", "muhanad");
-      cookiePrenom.setMaxAge(60*60*24);
-      response.addCookie(cookiePrenom);
-      
+    response.setContentType("text/html;charset=UTF-8");
+    try (PrintWriter out = response.getWriter()) {
       HttpSession session = request.getSession();
-      
-      if (session.getAttribute("tokenSession") == null) {
-        SecureRandom random = new SecureRandom();
-        byte[] salt = new byte[100];
-        random.nextBytes(salt);
-        session.setAttribute("tokenSession", salt);
-      }
-     
-     
-
-      if (session.getAttribute("compteurPage") == null) {
-        session.setAttribute("compteurPage", 0);
-      } else {
-        Integer compteurPage = (Integer) session.getAttribute("compteurPage");
-        compteurPage++;
-        session.setAttribute("compteurPage", compteurPage);
-      }
-      
-      String cmd = request.getParameter("cmd");
+      cmd = request.getParameter("cmd");
       ICommand com = (ICommand) commands.get(cmd);
-     
-      urlSuite = com.execute(request, response);
-      if (urlSuite.equals("") ) {
-        
+      if (session.getAttribute("admin") != "admin") {
+        if (admin.containsKey(cmd)) {
+          com = (ICommand) commands.get("login");;
+        }
+        urlSuite = com.execute(request, response);
+        request.getRequestDispatcher("/WEB-INF/JSP/" + urlSuite)
+          .forward(request, response);
+      }else{
+        urlSuite = com.execute(request, response);
+        request.getRequestDispatcher("/WEB-INF/JSP/" + urlSuite)
+            .forward(request, response);
       }
-      request.getRequestDispatcher("/WEB-INF/JSP/" + urlSuite)
-      .forward(request, response);
     } catch (Exception e) {
       urlSuite = "erreur.jsp";
       request.getRequestDispatcher("/WEB-INF/JSP/" + urlSuite)
-      .forward(request, response);
+          .forward(request, response);
     }
   }
+
   /**
    * Handles the HTTP <code>GET</code> method.
    *
@@ -180,7 +171,7 @@ private static String urlSuite = null;
    */
   @Override
   protected void doGet(final HttpServletRequest request,
-   final HttpServletResponse response)
+      final HttpServletResponse response)
       throws ServletException, IOException {
     processRequest(request, response);
   }
@@ -195,17 +186,17 @@ private static String urlSuite = null;
    */
   @Override
   protected void doPost(final HttpServletRequest request,
-   final HttpServletResponse response)
+      final HttpServletResponse response)
       throws ServletException, IOException {
     processRequest(request, response);
   }
-/**
- * objet entityManager qui fait le conn à bd.
- * @return objet entityManager
- */
+
+  /**
+   * objet entityManager qui fait le conn à bd.
+   * 
+   * @return objet entityManager
+   */
   public static EntityManager getEntityManager() {
     return entityManager;
   }
-
-
 }

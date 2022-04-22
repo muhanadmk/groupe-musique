@@ -13,14 +13,14 @@ http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
     <welcome-file>groupe-musique</welcome-file>
   </welcome-file-list>
   
-  <error-page>
+  <!-- <error-page>
     <error-code>500</error-code>
     <location>/WEB-INF/JSP/erreur.jsp</location>
   </error-page>
   <error-page>
     <error-code>404</error-code>
     <location>/WEB-INF/JSP/erreur.jsp</location>
-  </error-page>
+  </error-page> -->
   
   <session-config>
     <session-timeout>

@@ -1,8 +1,5 @@
 package frontControllers;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.SecureRandom;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +10,9 @@ import models.User;
 import utile.HashageUser;
 
 public class PageConnectionUserController implements ICommand {
+  public PageConnectionUserController(){}
   /**
+   * 
    * LOGGER.
    */
   private static final Logger LOGGER = Logger.getLogger(

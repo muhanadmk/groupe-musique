@@ -10,5 +10,4 @@
     <p class="text-center text-light">© 2021 Company, Inc</p>
   </footer>
   <script src="${pageContext.request.contextPath}/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
- <!-- <script src="${pageContext.request.contextPath}/js/index.js"></script> -->
 </div>

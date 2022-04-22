@@ -7,7 +7,7 @@
             href="${pageContext.request.contextPath}">Accueil</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active text-light" href="?cmd=list">liste</a>
+          <a class="nav-link active text-light" href="${pageContext.request.contextPath}">liste</a>
         </li>
         <li class="nav-item">
           <a class="nav-link active text-light" href="?cmd=cree">creation</a>
@@ -21,9 +21,15 @@
       </ul>
 
       <div class="text-end">
-        <a type="button"  href="?cmd=login" class="btn btn-outline-light me-2"> Login</a>
-        <a type="button" href="?cmd=sinup" class="btn btn-warning">Sign-up</a>
-      </div>
+        <c:if test="${empty sessionScope.admin}">
+          <a type="button"  href="?cmd=login" class="btn btn-outline-light me-2"> Login</a>
+          <a type="button" href="?cmd=sinup" class="btn btn-warning">Sign-up</a>
+        </c:if>
+        <c:if test="${!empty sessionScope.admin}">
+          <a type="button" href="?cmd=logout" class="btn btn-danger">log-out</a>
+        </c:if>
+       </div>
     </div>
   </div>
 </header>
+

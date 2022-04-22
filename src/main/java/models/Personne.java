@@ -48,8 +48,8 @@ public class Personne {
   @Size(min = 2, message = "nom doit etre plus que 2 lettre")
   private String nom;
 
-  @ManyToOne()
-  private Groupe groupe;
+  // @ManyToOne()
+  // private Groupe groupe;
 
 /**
  * constructeur implicit.
@@ -67,12 +67,9 @@ public class Personne {
     setPrenom(prenomPersonne);
   }
 
-  public Personne(Integer identifiant, String prenom, String nom, Groupe groupe) {
-   // this.identifiant = identifiant;
-    this.prenom = prenom;
-    this.nom = nom;
-    this.groupe = groupe;
-  }
+  // public Personne(Integer identifiant, String prenom, String nom, Groupe groupe) {
+   
+  // }
 
   /**
    * pour set le nom.
@@ -120,13 +117,13 @@ public class Personne {
     this.prenom = prenomPersonne;
   }
 
-  public Groupe getGroupe() {
-    return this.groupe;
-  }
+  // public Groupe getGroupe() {
+  //   return this.groupe;
+  // }
 
-  public void setGroupe(Groupe groupe) {
-    this.groupe = groupe;
-  }
+  // public void setGroupe(Groupe groupe) {
+  //   this.groupe = groupe;
+  // }
 
 
   @Override
