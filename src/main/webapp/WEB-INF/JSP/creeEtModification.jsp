@@ -1,3 +1,4 @@
+<%@page import="utile.TokenHelper" %>
 <%@ include file="taglibs.jsp" %>
   <!DOCTYPE html>
   <html lang="fr">
@@ -20,17 +21,19 @@
       <main class="text-black container mt-lg-5 mt-sm-4">
         <div class="container">
           <div class="row d-flex justify-content-center">
-            <p class="col-lg-6 col-sm-12 alert alert-primary" role="alert">
-              Le numéro de page lu est :
-              <c:out value="${!empty sessionScope.compteurPage ? sessionScope.compteurPage :'Err in compteurPage'}" />
-            </p>
+            <c:if test="${!empty sessionScope.compteurPage}">
+              <p class="col-lg-6 col-sm-12 alert alert-primary" role="alert">
+                Le numéro de page lu est :
+                <c:out value="${sessionScope.compteurPage}" />
+              </p>
+            </c:if>
             <c:if test="${!empty listModifVide}">
               <h1 class="d-flex justify-content-center">
                 <c:out value="${listModifVide}" />
               </h1>
             </c:if>
     
-            <c:if test="${!empty personnes and empty errSaisiePersonForm}">
+            <c:if test="${!empty personnes and empty errSaisiePersonForm and empty errTokenCerf}">
                 <h1 class="d-flex justify-content-center mb-4">modification</h1>
                 <form class="col-lg-6 col-sm-12" method="post">
                   <div class="form-input mt-4">
@@ -54,16 +57,24 @@
         </div>
         <c:if test="${empty listModifVide}">
 
-          <c:if test="${empty personnes or !empty errSaisiePersonForm}">
+          <c:if test="${empty personnes or !empty errSaisiePersonForm or !empty errTokenCerf}">
             <div class="container">
               <h1 class="d-flex justify-content-center mb-4">
                 <c:out value="${!empty creation ? 'creation' : 'modification'}" />
               </h1>
               <div class="row d-flex justify-content-center">
                 <form class="col-lg-6 col-sm-12" method="post">
+                  <c:set var="csrfToken" value="${TokenHelper.getC_token()}" />
+                  <c:set var="csrfTokenSession" value="${csrfToken}" scope="session" />
+                  <input type="hidden" name="tokenEnvoie" value="${csrfToken}" />
                   <c:if test="${!empty errSaisiePersonForm}">
                     <div class="alert alert-danger" role="alert">
-                      ${!empty errSaisiePersonForm ? errSaisiePersonForm : '' }
+                      ${errSaisiePersonForm}
+                    </div>
+                  </c:if>
+                  <c:if test="${!empty errTokenCerf}">
+                    <div class="alert alert-danger" role="alert">
+                      ${errTokenCerf}
                     </div>
                   </c:if>
                   <div id="nomErr" class="form-input">

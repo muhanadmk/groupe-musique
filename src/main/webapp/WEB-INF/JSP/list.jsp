@@ -25,12 +25,12 @@
         <c:out value="${!empty Monprenom ? Monprenom : 'noCookie'}"/> from
         cookie
       </p>
-      <p class="col-lg-6 col-sm-12 alert alert-primary" role="alert">
-        Le numéro de page lu est :
-        <c:out
-          value="${!empty sessionScope.compteurPage ? sessionScope.compteurPage :'Err in compteurPage'}"
-        />
-      </p>
+      <c:if test="${!empty sessionScope.compteurPage}">
+        <p class="col-lg-6 col-sm-12 alert alert-primary" role="alert">
+          Le numéro de page lu est :
+          <c:out value="${sessionScope.compteurPage}" />
+        </p>
+      </c:if>
       <c:if test="${empty personnes}">
         <h2>
           la numéro des adhérents :

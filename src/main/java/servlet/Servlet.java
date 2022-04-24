@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Cookie;
 
 import com.mysql.cj.jdbc.AbandonedConnectionCleanupThread;
 
@@ -84,7 +85,7 @@ public class Servlet extends HttpServlet {
    */
 
   public void init() {
-    commands.put("accueil", new PageAccueilController());
+    commands.put(null, new PageAccueilController());
     commands.put("login", new PageLogInController());
     commands.put("sinup", new PageConnectionUserController());
     commands.put("logout", new DeconnexionController());
@@ -132,36 +133,48 @@ public class Servlet extends HttpServlet {
       throws ServletException, IOException {
     response.setContentType("text/html;charset=UTF-8");
     try (PrintWriter out = response.getWriter()) {
-      HttpSession session = request.getSession();
-      if (session.getAttribute("compteurPage") == null) {
-        session.setAttribute("compteurPage", 0);
-      } else {
-        Integer compteurPage = (Integer) session.getAttribute("compteurPage");
-        compteurPage++;
-        session.setAttribute("compteurPage", compteurPage);
-      }
-      cmd = request.getParameter("cmd");
-      ICommand com = (ICommand) commands.get(cmd);
-      if (session.getAttribute("admin") == null) {
-        if (admin.containsKey(cmd)) {
-          com = (ICommand) commands.get("login");
-          request.setAttribute("msgNotAdmin",
-              "Vous devez faire le log-in pour manipuler dans le site.");
-        }
-        if (cmd.equals("logout")) {
-          if (session.getAttribute("logout").toString().equals("logout")) {
-            com = (ICommand) commands.get("login");
+      Cookie cookiePrenom = new Cookie("prenom", "muhanad");
+      cookiePrenom.setMaxAge(60 * 60 * 24);
+      response.addCookie(cookiePrenom);
+      Cookie[] cookies = request.getCookies();
+      if (cookies != null) {
+        for (Cookie cookie : cookies) {
+          if (cookie.getName().equals("prenom")) {
+            request.setAttribute("Monprenom", cookie.getValue());
           }
         }
-        urlSuite = com.execute(request, response);
-        request.getRequestDispatcher("/WEB-INF/JSP/" + urlSuite)
-            .forward(request, response);
       }
-      if (session.getAttribute("admin").toString().equals("admin")) {
-        urlSuite = com.execute(request, response);
-        request.getRequestDispatcher("/WEB-INF/JSP/" + urlSuite)
-            .forward(request, response);
-      }
+      HttpSession session = request.getSession(true);
+      cmd = request.getParameter("cmd");
+      ICommand com = (ICommand) commands.get(cmd);
+      urlSuite = com.execute(request, response);
+      request.getRequestDispatcher("/WEB-INF/JSP/" + urlSuite)
+      .forward(request, response);
+      // String cmdRrediriger = cmd;
+      // if (session.getAttribute("compteurPage") == null) {
+      //   session.setAttribute("compteurPage", 0);
+      // } else {
+      //   Integer compteurPage = (Integer) session.getAttribute("compteurPage");
+      //   compteurPage++;
+      //   session.setAttribute("compteurPage", compteurPage);
+      // }
+      // if (session.getAttribute("admin") == null) {
+
+      //   if (admin.containsKey(cmd)) {
+      //     com = (ICommand) commands.get("login");
+      //    request.setAttribute("msgNotAdmin",
+      //         "Vous devez faire le log-in pour manipuler dans le site.");
+      //    // session.setAttribute("comRrediriger", cmd);    
+      //   }
+      //   urlSuite = com.execute(request, response);
+      //   request.getRequestDispatcher("/WEB-INF/JSP/" + urlSuite)
+      //       .forward(request, response);
+      // }
+      // if (session.getAttribute("admin").toString().equals("admin")) {
+      //   urlSuite = com.execute(request, response);
+      //   request.getRequestDispatcher("/WEB-INF/JSP/" + urlSuite)
+      //       .forward(request, response);
+      // }
     } catch (Exception e) {
       urlSuite = "erreur.jsp";
       request.getRequestDispatcher("/WEB-INF/JSP/" + urlSuite)

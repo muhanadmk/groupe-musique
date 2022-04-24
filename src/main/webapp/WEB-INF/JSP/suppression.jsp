@@ -1,3 +1,4 @@
+<%@page import="utile.TokenHelper" %>
 <%@ include file="taglibs.jsp" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,13 +16,24 @@
  <main class="text-black container mt-lg-5 mt-sm-4">
    <div class="container">
      <div class="row d-flex justify-content-center">
-      <p class="col-lg-6 col-sm-12 alert alert-primary" role="alert">
-        Le numéro de page lu est : <c:out value="${!empty sessionScope.compteurPage ? sessionScope.compteurPage :'Err in compteurPage'}"/>   
+      <c:if test="${!empty sessionScope.compteurPage}">
+        <p class="col-lg-6 col-sm-12 alert alert-primary" role="alert">
+          Le numéro de page lu est :
+          <c:out value="${sessionScope.compteurPage}" />
         </p>
+      </c:if>
         <h1 class="d-flex justify-content-center">${!empty listSuprimVide ? listSuprimVide : ''}</h1>
         <c:if test="${!empty personnes and empty listSuprimVide}">
           <h1 class="d-flex justify-content-center mb-4">suppression</h1>
           <form class="col-lg-6 col-sm-12" method="post">
+            <c:if test="${!empty errTokenCerf}">
+                <div class="alert alert-danger" role="alert">
+                 ${errTokenCerf}
+                </div>
+             </c:if>
+            <c:set var="csrfToken" value="${TokenHelper.getC_token()}" />
+            <c:set var="csrfTokenSession" value="${csrfToken}" scope="session" />
+            <input type="hidden" name="tokenEnvoie" value="${csrfToken}" />
             <div class="form-input mt-4">
               <label for="form-select">choisir personne :</label>
               <select class="form-select" name="idSelectPersonne" required>

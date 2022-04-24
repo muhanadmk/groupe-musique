@@ -9,16 +9,18 @@ import javax.servlet.http.HttpSession;
 import dao.DaoPersonne;
 
 public class PageSuppressionController implements ICommand {
-  public PageSuppressionController(){}
+  public PageSuppressionController() {
+  }
 
-    /**
+  /**
    * LOGGER.
    */
   private static final Logger LOGGER = Logger.getLogger(
-    PageSuppressionController.class.getName());
+      PageSuppressionController.class.getName());
 
   /**
    * méthode pour Supprimer les personnes de l'arrylist pour les afficher.
+   * 
    * @param request  request objet de classe HttpServletRequest
    * @param response response objet de classe HttpServletResponse
    * @return le parm vers la page jsp de suppression
@@ -27,19 +29,25 @@ public class PageSuppressionController implements ICommand {
   public String execute(final HttpServletRequest request,
       final HttpServletResponse response) throws Exception {
     try {
+      HttpSession session = request.getSession();
       if (!DaoPersonne.findAll().isEmpty()) {
-          request.setAttribute("personnes", DaoPersonne.findAll());
-          request.setAttribute("listSuprimVide", "");
+        request.setAttribute("personnes", DaoPersonne.findAll());
+       // request.setAttribute("errTokenCerf", "");
         if (request.getParameterMap().containsKey("idSelectPersonne")) {
-          DaoPersonne.delete(Integer.parseInt(
-            request.getParameter("idSelectPersonne")));
-          request.setAttribute("personnes", DaoPersonne.findAll());
-          request.setAttribute("personnesSize", DaoPersonne.findAll().size());
-          return "list.jsp";
-        }
+          if (session.getAttribute("csrfTokenSession")
+              .equals(request.getParameter("tokenEnvoie"))) {
+            DaoPersonne.delete(Integer.parseInt(
+                request.getParameter("idSelectPersonne")));
+            request.setAttribute("personnes", DaoPersonne.findAll());
+            request.setAttribute("personnesSize", DaoPersonne.findAll().size());
+            return "list.jsp";
+          } else {
+            request.setAttribute("errTokenCerf", "vous avez pas le drois d'envoiyer cette from.");
+          }
+        } 
       } else {
         request.setAttribute("listSuprimVide",
-         "Vous n'avez pas des adhérents à supprimer.");
+            "Vous n'avez pas des adhérents à supprimer.");
       }
       return "suppression.jsp";
     } catch (Exception e) {

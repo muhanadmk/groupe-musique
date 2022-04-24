@@ -1,3 +1,4 @@
+<%@page import="utile.TokenHelper" %>
 <%@ include file="taglibs.jsp" %>
   <!DOCTYPE html>
   <html lang="fr">
@@ -19,11 +20,19 @@
     <main class="form-signin container col-lg-4 col-sm-12 mt-5">
       <form method="post">
         <h1 class="h3 mb-3 fw-normal"> Please sign in</h1>
+        <c:if test="${!empty errTokenCerf}">
+          <div class="alert alert-danger" role="alert">
+           ${errTokenCerf}
+          </div>
+       </c:if>
         <c:if test="${!empty msgNotAdmin}">
           <p class="alert alert-primary" role="alert">
            ${msgNotAdmin}
           </p>
         </c:if>
+        <c:set var="csrfToken" value="${TokenHelper.getC_token()}" />
+            <c:set var="csrfTokenSession" value="${csrfToken}" scope="session" />
+            <input type="hidden" name="tokenEnvoie" value="${csrfToken}" />
         <div class="form-floating">
           <input type="text" class="form-control" id="floatingInput" name="user" placeholder="user">
           <label for="floatingInput">Email address</label>

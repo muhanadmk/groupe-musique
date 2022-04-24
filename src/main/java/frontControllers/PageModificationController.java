@@ -15,15 +15,17 @@ import javax.validation.ValidatorFactory;
 import dao.DaoPersonne;
 import models.Personne;
 import models.forms.SaisiePersonForm;
+import utile.TokenHelper;
 
 public class PageModificationController implements ICommand {
-  public PageModificationController(){}
+  public PageModificationController() {
+  }
 
-    /**
+  /**
    * LOGGER.
    */
   private static final Logger LOGGER = Logger.getLogger(
-    PageModificationController.class.getName());
+      PageModificationController.class.getName());
 
   /**
    * Méthode pour modifier les personnes et les stocker dans arrylist.
@@ -37,61 +39,68 @@ public class PageModificationController implements ICommand {
       final HttpServletResponse response) throws Exception {
     try {
       if (!request.getParameterMap().containsKey("personnes")
-      && !request.getParameterMap().containsKey("idSelectPersonne")
-      && !request.getParameterMap().containsKey("errSaisiePersonForm")) {
+          && !request.getParameterMap().containsKey("idSelectPersonne")
+          && !request.getParameterMap().containsKey("errSaisiePersonForm")) {
         if (!DaoPersonne.findAll().isEmpty()) {
           request.setAttribute("personnes", DaoPersonne.findAll());
           request.setAttribute("listModifVide", "");
         } else {
           request.setAttribute("listModifVide",
-          "Vous n'avez pas des adhérents à modifier.");
+              "Vous n'avez pas des adhérents à modifier.");
         }
       }
       if (request.getParameterMap().containsKey("idSelectPersonne")) {
         Personne personne = DaoPersonne.findPersonById(
-          Integer.parseInt(request.getParameter("idSelectPersonne")));
+            Integer.parseInt(request.getParameter("idSelectPersonne")));
         request.setAttribute("personneselectionne", personne);
       }
       if (request.getParameterMap().containsKey("idModifier")) {
+        HttpSession session = request.getSession();
         Personne personne = DaoPersonne.findPersonById(
-          Integer.parseInt(request.getParameter("idModifier")));
+            Integer.parseInt(request.getParameter("idModifier")));
         String nom = personne.getNom();
         String prenom = personne.getPrenom();
         personne.setNom(request.getParameter("nom"));
         personne.setPrenom(request.getParameter("prenom"));
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = (Validator) factory.getValidator();
-        Set<ConstraintViolation<Personne>> errorsValidation
-         = validator.validate(personne);
-        if (errorsValidation.isEmpty()) {
-          SaisiePersonForm saisiePersonForm = new SaisiePersonForm();
-          saisiePersonForm.verifForm(request);
-          String resultat = saisiePersonForm.getResultat();
-          if (!resultat.trim().isEmpty()) {
+        if (session.getAttribute("csrfTokenSession")
+            .equals(request.getParameter("tokenEnvoie"))) {
+          ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+          Validator validator = (Validator) factory.getValidator();
+          Set<ConstraintViolation<Personne>> errorsValidation = validator.validate(personne);
+          if (errorsValidation.isEmpty()) {
+            SaisiePersonForm saisiePersonForm = new SaisiePersonForm();
+            saisiePersonForm.verifForm(request);
+            String resultat = saisiePersonForm.getResultat();
+            if (!resultat.trim().isEmpty()) {
+              personne.setNom(nom);
+              personne.setPrenom(prenom);
+              request.setAttribute("personneselectionne", personne);
+              request.setAttribute("errSaisiePersonForm", resultat);
+            } else {
+              DaoPersonne.save(personne);
+              request.setAttribute("personnes", DaoPersonne.findAll());
+              request.setAttribute("personnesSize", DaoPersonne.findAll().size());
+              return "list.jsp";
+            }
+          } else {
+            ArrayList<String> msgErrBeans = new ArrayList<String>();
             personne.setNom(nom);
             personne.setPrenom(prenom);
+            for (ConstraintViolation<Personne> errorValidation : errorsValidation) {
+              msgErrBeans.add("La value que vous essaye de l'insere "
+                  + "( " + errorValidation.getInvalidValue() + " )"
+                  + "" + errorValidation.getMessage());
+            }
             request.setAttribute("personneselectionne", personne);
-            request.setAttribute("errSaisiePersonForm", resultat);
-          } else {
-            DaoPersonne.save(personne);
-            request.setAttribute("personnes", DaoPersonne.findAll());
-            request.setAttribute("personnesSize", DaoPersonne.findAll().size());
-            return "list.jsp";
+            request.setAttribute("errSaisiePersonForm",
+                msgErrBeans.toString().substring(
+                    1, msgErrBeans.toString().length() - 1));
           }
         } else {
-          ArrayList<String> msgErrBeans = new ArrayList<String>();
           personne.setNom(nom);
           personne.setPrenom(prenom);
-          for (ConstraintViolation<Personne>
-          errorValidation : errorsValidation) {
-            msgErrBeans.add("La value que vous essaye de l'insere "
-                + "( " + errorValidation.getInvalidValue() + " )"
-                + "" + errorValidation.getMessage());
-          }
           request.setAttribute("personneselectionne", personne);
-          request.setAttribute("errSaisiePersonForm",
-              msgErrBeans.toString().substring(
-                1, msgErrBeans.toString().length() - 1));
+          request.setAttribute("errTokenCerf", "vous avez pas le drois d'envoiyer cette from.");
         }
       }
       return "creeEtModification.jsp";

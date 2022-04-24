@@ -6,12 +6,11 @@ package frontControllers;
 
 import java.util.logging.Logger;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import dao.DaoPersonne;
+import utile.TokenHelper;
 
 public class PageAccueilController implements ICommand {
   public PageAccueilController(){}
@@ -33,20 +32,11 @@ public class PageAccueilController implements ICommand {
       final HttpServletResponse response) throws Exception {
         
     try {
-      // HttpSession session = request.getSession();
-      // session.setAttribute("admin", null);
-      Cookie[] cookies = request.getCookies();
-      if (cookies != null) {
-        for (Cookie cookie : cookies) {
-          if (cookie.getName().equals("prenom")) {
-            request.setAttribute("Monprenom", cookie.getValue());
-          }
-        }
-      }
       if (!request.getParameterMap().containsKey("personnes")) {
         request.setAttribute("personnes", DaoPersonne.findAll());
         request.setAttribute("personnesSize", DaoPersonne.findAll().size());
       }
+      request.setAttribute("token", TokenHelper.getC_token());
       return "list.jsp";
     } catch (Exception e) {
       request.setAttribute("msgErr", e.getMessage());
